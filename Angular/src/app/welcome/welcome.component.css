@@ -23,3 +23,19 @@
     1px 25px 35px rgba(16,16,16,0.2),
     1px 30px 60px rgba(16,16,16,0.4);
 }
+
+.mat-button {
+    display: flex;
+    border-radius: 50px;
+    margin-left: 500px;
+    margin-right: 500px;
+    margin-bottom: 50px;
+    width: 250px;
+    height: 64px;
+    line-height: 64px;
+    background-color:  #616161;
+    color: #e0e0e0;
+    font-size: 32px;
+    padding:0 !important;
+	justify-content: center;
+}
