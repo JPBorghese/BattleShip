@@ -11,6 +11,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {FormsModule} from "@angular/forms";
+import { IgxButtonModule } from 'igniteui-angular';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,9 @@ import {FormsModule} from "@angular/forms";
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
-    FormsModule
+    FormsModule, 
+    IgxButtonModule
+
   ],
   providers: [],
   bootstrap: [AppComponent]

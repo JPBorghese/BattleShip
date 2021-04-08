@@ -18,6 +18,8 @@
     "@angular/platform-browser": "^11.2.8",
     "@angular/platform-browser-dynamic": "^11.2.8",
     "@angular/router": "^11.2.8",
+    "igniteui-angular": "^11.1.7",
+    "igniteui-cli": "^7.1.1",
     "rxjs": "^6.6.7",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.3"

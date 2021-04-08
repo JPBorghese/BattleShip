@@ -34,3 +34,5 @@ async function isRevoked(req, payload, done) {
     // done (Function) - A function with signature function(err, secret) to be invoked when the secret is retrieved.
     done();
 };
+
+//
