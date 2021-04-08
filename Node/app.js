@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cors());
 app.use(jwt());
 
-//app.use('/user', require('./routes/user.router'));
+app.use('/user', require('./routes/user.router'));
 //app.use('/parecord', require('./routes/parecord.router'));
 app.use(errorHandler);
 

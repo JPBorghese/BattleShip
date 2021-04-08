@@ -8,7 +8,8 @@ const User = db.User;
 
 
 module.exports = {
-    authenticate
+    authenticate,
+    addUser
 }
 
 async function authenticate({ username, password }) {
@@ -22,4 +23,23 @@ async function authenticate({ username, password }) {
             token
         };
     }
+}
+
+async function addUser(userParam) {
+
+    // validate
+    if (await User.findOne({ username: userParam.username })) {
+        throw 'Username "' + userParam.username + '" is already taken';
+    }
+
+    const user = new User(userParam);
+
+    // hash password
+    if (userParam.password) {
+        user.hash = bcrypt.hashSync(userParam.password, 10);
+    }
+
+    // save user
+    await user.save();
+
 }
