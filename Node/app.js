@@ -10,7 +10,7 @@ const jwt = require('./_helpers/jwt');
 
 
 // Our error handler
-const errorHandler = require('./_helpers/error-handler');
+const errorHandler = require('./_helpers/error_handler');
 
 app.use(express.urlencoded());
 app.use(express.json());
