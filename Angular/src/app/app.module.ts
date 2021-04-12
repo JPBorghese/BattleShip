@@ -13,12 +13,16 @@ import {MatInputModule} from '@angular/material/input';
 import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from '@angular/material/button';
 import { IgxButtonModule } from 'igniteui-angular';
+import { PlayComponent } from './play/play.component';
+import { TutorialComponent } from './tutorial/tutorial.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    PlayComponent,
+    TutorialComponent
   ],
   imports: [
     BrowserModule,
