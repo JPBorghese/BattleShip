@@ -5,6 +5,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { WelcomeComponent } from './welcome/welcome.component';
+import { PlayComponent } from './play/play.component';
+import { TutorialComponent } from './tutorial/tutorial.component';
+import { RegisterComponent } from './register/register.component';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatCardModule} from '@angular/material/card';
@@ -13,8 +16,8 @@ import {MatInputModule} from '@angular/material/input';
 import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from '@angular/material/button';
 import { IgxButtonModule } from 'igniteui-angular';
-import { PlayComponent } from './play/play.component';
-import { TutorialComponent } from './tutorial/tutorial.component';
+import { HttpClientModule } from '@angular/common/http';
+import {MatGridListModule} from '@angular/material/grid-list';
 
 @NgModule({
   declarations: [
@@ -22,7 +25,8 @@ import { TutorialComponent } from './tutorial/tutorial.component';
     LoginComponent,
     WelcomeComponent,
     PlayComponent,
-    TutorialComponent
+    TutorialComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -33,8 +37,9 @@ import { TutorialComponent } from './tutorial/tutorial.component';
     MatInputModule,
     FormsModule, 
     IgxButtonModule, 
-    MatButtonModule
-
+    MatButtonModule,
+    HttpClientModule,
+    MatGridListModule
   ],
   providers: [],
   bootstrap: [AppComponent]
