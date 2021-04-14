@@ -13,16 +13,35 @@ interface tile {
 })
 export class PlayComponent implements OnInit {
 
-  board: tile[];
+  yourBoard: tile[];
+  oppBoard: tile[];
   constructor() { }
 
   ngOnInit(): void {
-    for (let i = 0; i < 100; i++) {
-      this.board[i].coord = i;
-      this.board[i].hasBoat = false;
-      this.board[i].isBombed = false;
-    }
-    console.log(this.board);
-  }
+    this.yourBoard = [{
+      coord: 0,
+      hasBoat: false,
+      isBombed: false
+    }];
 
+    this.oppBoard = [{
+      coord: 0,
+      hasBoat: false,
+      isBombed: false
+    }];
+
+    for (let i = 1; i <= 99; i++) {
+      this.yourBoard.push({
+        coord: i,
+        hasBoat: false,
+        isBombed: false
+      });
+
+      this.oppBoard.push({
+        coord: i,
+        hasBoat: false,
+        isBombed: false
+      });
+    }
+  }
 }
