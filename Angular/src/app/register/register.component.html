@@ -10,9 +10,11 @@
 
 	<mat-form-field appearance="legacy">
 		<mat-label>Password</mat-label>
-		<input matInput type="text" [(ngModel)]="password" placeholder="Password">
+		<input matInput type="password" [(ngModel)]="password" placeholder="Password">
 	</mat-form-field>
 
-	<button mat-button (click)="register()">Submit</button>
-	<button mat-button routerLink="/login">Back</button>
+    <div>
+        <button mat-button (click)="register()">Submit</button>
+	    <button mat-button routerLink="/login">Back</button>
+    </div>
 </mat-card>

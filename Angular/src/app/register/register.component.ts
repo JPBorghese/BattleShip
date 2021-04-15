@@ -10,8 +10,8 @@ import {UserService} from '../_services/user.service';
 })
 export class RegisterComponent implements OnInit {
 
-  username: string;
-  password: string;
+  username: string = "";
+  password: string = "";
 
   constructor(private userService: UserService) { }
 
@@ -19,6 +19,11 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
+    if (this.username === "" || this.password === "") {
+      console.log("Username or password not filled");
+      return;
+    }
+
     this.userService.register(this.username, this.password).pipe(first())
       .subscribe( data => {
         console.log(data);
