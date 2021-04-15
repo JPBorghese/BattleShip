@@ -20,7 +20,6 @@ export class GameComponent implements OnInit {
       isBombed: false
     }];
 
-    console.log(typeof(this.yourBoard[0]));
     this.oppBoard = [{
       coord: 0,
       hasBoat: false,
