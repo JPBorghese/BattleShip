@@ -1,3 +1,4 @@
+import {Router} from '@angular/router';
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User} from '../_models/user';
@@ -14,7 +15,8 @@ export class AuthService {
   public currentUser: Observable<any>;  // changed from Observable<User>
 
   constructor(private http: HttpClient,
-      private notifService: NotificationService) {
+      private notifService: NotificationService,
+      private router: Router) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
 
     // currentUser is turned into an Observable that will allow other parts of the app to subscribe and get notified when currentUserSubject changes.
@@ -57,6 +59,8 @@ export class AuthService {
     // notify all subscribers that user has logged out.
     this.currentUserSubject.next(null);
     this.currentUser = this.currentUserSubject.asObservable();
+
+    this.router.navigate(['/']);
   }
 
 
