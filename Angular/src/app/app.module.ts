@@ -8,6 +8,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { PlayComponent } from './play/play.component';
 import { TutorialComponent } from './tutorial/tutorial.component';
 import { RegisterComponent } from './register/register.component';
+import { GameComponent } from './game/game.component';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatCardModule} from '@angular/material/card';
@@ -26,7 +27,8 @@ import {MatGridListModule} from '@angular/material/grid-list';
     WelcomeComponent,
     PlayComponent,
     TutorialComponent,
-    RegisterComponent
+    RegisterComponent,
+    GameComponent
   ],
   imports: [
     BrowserModule,

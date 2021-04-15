@@ -1,6 +1,15 @@
-<mat-grid-list cols="2" rowHeight="3:1" colHeight="3:1">
-    <mat-grid-tile>1</mat-grid-tile>
-    <mat-grid-tile>2</mat-grid-tile>
-    <mat-grid-tile>3</mat-grid-tile>
-    <mat-grid-tile>4</mat-grid-tile>
+<mat-card layout="row">
+  <mat-grid-list cols="10" rowHeight="5:1" class="board">
+      <mat-grid-tile class="square" *ngFor="let tile of yourBoard;">{{tile.coord}}</mat-grid-tile>
   </mat-grid-list>
+</mat-card>
+
+<mat-card layout="row">
+  <mat-grid-list cols="10" rowHeight="5:1" class="board">
+      <mat-grid-tile *ngFor="let tile of oppBoard;">
+        <button onclick="display(tile)">
+          {{tile.coord}}
+        </button>
+      </mat-grid-tile>
+  </mat-grid-list>
+</mat-card>
