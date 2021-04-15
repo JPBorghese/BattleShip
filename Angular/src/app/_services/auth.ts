@@ -47,6 +47,7 @@ export class AuthService {
     localStorage.removeItem('currentUser');
     // notify all subscribers that user has logged out.
     this.currentUserSubject.next(null);
+    this.currentUser = this.currentUserSubject.asObservable();
   }
 
 
