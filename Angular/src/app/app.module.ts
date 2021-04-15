@@ -17,9 +17,10 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from '@angular/material/button';
-import { IgxButtonModule } from 'igniteui-angular';
-import { HttpClientModule } from '@angular/common/http';
+import {IgxButtonModule } from 'igniteui-angular';
+import {HttpClientModule } from '@angular/common/http';
 import {MatGridListModule} from '@angular/material/grid-list';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import {MatGridListModule} from '@angular/material/grid-list';
     IgxButtonModule, 
     MatButtonModule,
     HttpClientModule,
-    MatGridListModule
+    MatGridListModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
