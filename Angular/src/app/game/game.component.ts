@@ -1,10 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
-interface tile {
-  coord: number;
-  hasBoat: boolean;
-  isBombed: boolean;
-}
+import {Tile} from '../_models/tile';
 
 @Component({
   selector: 'app-game', 
@@ -13,8 +8,8 @@ interface tile {
 })
 export class GameComponent implements OnInit {
 
-  yourBoard: tile[];
-  oppBoard: tile[];
+  yourBoard: Tile[];
+  oppBoard: Tile[];
 
   constructor() { }
   
@@ -25,6 +20,7 @@ export class GameComponent implements OnInit {
       isBombed: false
     }];
 
+    console.log(typeof(this.yourBoard[0]));
     this.oppBoard = [{
       coord: 0,
       hasBoat: false,

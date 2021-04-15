@@ -2,6 +2,49 @@ mat-grid-tile {
   background: lightblue;
 }
 
-.square {
-  
+.yourTitle {
+  grid-area: yourTitle;
+  align-self: end;
+  justify-self: center;
+}
+
+.oppTitle {
+  grid-area: oppTitle;
+  align-self: end;
+  justify-self: center;
+}
+
+.yourBoard {
+  grid-area: yourBoard;
+}
+
+.oppBoard {
+  grid-area: oppBoard;
+}
+
+.chat {
+  grid-area: chat;
+}
+
+.yourShips {
+  grid-area: yourShips;
+}
+
+.oppShips {
+  grid-area: oppShips;
+}
+
+.container {
+  display: grid;
+  width: 90vw;
+  height: 90vh;
+  grid-template-columns: 1% 30% 30% auto;
+  column-gap: 50px;
+  grid-template-rows: 10% 60% 5%;
+  grid-template-areas:
+  ". yourTitle oppTitle ." 
+  ". yourBoard oppBoard chat"
+  ". yourBoard oppBoard chat"
+  ". yourShips oppShips chat"
+
 }
