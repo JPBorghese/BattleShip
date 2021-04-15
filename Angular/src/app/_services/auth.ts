@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User} from '../_models/user';
-
 import {HttpClient} from '@angular/common/http';
 import { map } from 'rxjs/operators';
+
+import {NotificationService} from './notification.service';
 
 
 @Injectable({ providedIn: 'root' })
@@ -12,7 +13,8 @@ export class AuthService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<any>;  // changed from Observable<User>
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+      private notifService: NotificationService) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
 
     // currentUser is turned into an Observable that will allow other parts of the app to subscribe and get notified when currentUserSubject changes.
@@ -37,6 +39,8 @@ export class AuthService {
           this.currentUserSubject.next(user);
         }
 
+        this.notifService.showNotif(`Logged in as ${user.username}`, "(:");
+
         return user;
     }));
   }
@@ -45,6 +49,11 @@ export class AuthService {
   logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
+
+    if (this.currentUserSubject.value) {
+      this.notifService.showNotif(`Logged out`, "(:");
+    }
+
     // notify all subscribers that user has logged out.
     this.currentUserSubject.next(null);
     this.currentUser = this.currentUserSubject.asObservable();
