@@ -1,1 +1,18 @@
-<p>register works!</p>
+<mat-card class="register-card">
+	<mat-card-header>
+		<mat-card-title>Register</mat-card-title>
+	</mat-card-header>
+
+	<mat-form-field appearance="legacy">
+		<mat-label>Username</mat-label>
+		<input matInput type="text" [(ngModel)]="username" placeholder="Username">
+	</mat-form-field>
+
+	<mat-form-field appearance="legacy">
+		<mat-label>Password</mat-label>
+		<input matInput type="text" [(ngModel)]="password" placeholder="Password">
+	</mat-form-field>
+
+	<button mat-button (click)="register()">Submit</button>
+	<button mat-button routerLink="/login">Back</button>
+</mat-card>
