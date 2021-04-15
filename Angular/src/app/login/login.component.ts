@@ -15,22 +15,24 @@ export class LoginComponent implements OnInit {
   submitted = false;
   error = '';
 
-  username: string;
-  password: string;
+  username: string = "";
+  password: string = "";
 
   constructor(private router: Router,
      private authService: AuthService,
-    //  private notif: NotificationService, 
      private app: AppComponent
-     ) { }
-  // constructor(){}
+     ) {}
 
   ngOnInit(): void {
   }
 
   login() {
-    this.submitted = true;
+    if (this.username === "" || this.password === "") {
+      console.log("Username or password not filled");
+      return;
+    }
 
+    this.submitted = true;
     this.loading = true;
 
     this.authService.login(this.username, this.password)
@@ -50,9 +52,4 @@ export class LoginComponent implements OnInit {
           console.log('Error', error);
         });
   }
-
-  register() {
-    // this.notif.notImplementedWarning('Registration', 500);
-  }
-
 }

@@ -18,7 +18,7 @@ export class AuthService {
     // currentUser is turned into an Observable that will allow other parts of the app to subscribe and get notified when currentUserSubject changes.
     this.currentUser = this.currentUserSubject.asObservable();
 
-    console.log(this.currentUser);
+    //console.log(this.currentUser);
   }
 
 
@@ -47,6 +47,7 @@ export class AuthService {
     localStorage.removeItem('currentUser');
     // notify all subscribers that user has logged out.
     this.currentUserSubject.next(null);
+    this.currentUser = this.currentUserSubject.asObservable();
   }
 
 
