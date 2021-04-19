@@ -5,14 +5,14 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { TutorialComponent } from './tutorial/tutorial.component';
-import { PlayComponent } from './play/play.component';
+import { SearchComponent } from './search/search.component';
 import { GameComponent } from './game/game.component';
 
 const routes: Routes = [
 	{ path: '', component: WelcomeComponent },
 	{ path: 'login', component: LoginComponent },
 	{ path: 'register', component: RegisterComponent }, 
-	{ path: 'play', component: PlayComponent }, 
+	{ path: 'search', component: SearchComponent }, 
 	{ path: 'game', component: GameComponent }, 
 	{ path: 'tutorial', component: TutorialComponent },   
   { path: '**', redirectTo: '' }

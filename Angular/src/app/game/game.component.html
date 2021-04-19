@@ -1,9 +1,8 @@
-<div class="container">
+<div class="game-container">
   <mat-card class="yourTitle">Your Board</mat-card>
   <mat-grid-list class="yourBoard" cols="10">
-    <mat-grid-tile class="square" *ngFor="let tile of yourBoard;">{{tile.coord}}</mat-grid-tile>
+    <mat-grid-tile *ngFor="let tile of yourBoard;">{{tile.coord}}</mat-grid-tile>
   </mat-grid-list>
-
 
   <mat-card class="oppTitle">Opponent's Board</mat-card>
   <mat-grid-list class="oppBoard" cols="10">
@@ -12,7 +11,32 @@
     </mat-grid-tile>
   </mat-grid-list>
 
-  <mat-card class="chat">Chat Goes Here</mat-card>
-  <mat-card class="yourShips">Your Ships Goes here</mat-card>
-  <mat-card class="oppShips">Opponent Ships Goes here</mat-card>
+  <mat-card class="yourShips">
+    <mat-card-title>
+      Your Ships
+      <mat-divider></mat-divider>
+    </mat-card-title>
+    <mat-card-content *ngFor="let ship of yourShips;">
+      {{ship.name}}: {{ship.holes}} left
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="oppShips">
+    <mat-card-title>
+      Opponent Ships
+      <mat-divider></mat-divider>
+    </mat-card-title>
+    <mat-card-content *ngFor="let ship of oppShips;">
+      {{ship.name}}: {{ship.holes}} left
+    </mat-card-content>
+  </mat-card>
+
+  <mat-icon class="chat-icon" (click)="showChat = true"> chat</mat-icon>
+  <mat-card class="chat-box" *ngIf="showChat">
+    <mat-card-title>Chat</mat-card-title>
+    <mat-icon class="close" (click)="showChat = false">
+      close
+    </mat-icon>
+    <mat-divider></mat-divider>
+  </mat-card>
 </div>

@@ -22,28 +22,48 @@ mat-grid-tile {
   grid-area: oppBoard;
 }
 
-.chat {
-  grid-area: chat;
+.chat-icon {
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
+}
+
+.chat-box {
+  position: absolute;
+  bottom: 50px;
+  right: 36px;
+  min-width: 300px;
+  min-height: 300px;
+}
+
+.close {
+  position: relative;
+  left: 90%;
+  bottom: 36px;
 }
 
 .yourShips {
   grid-area: yourShips;
+  width: 180px;
+  align-self: center;
+  justify-self: center;
 }
 
 .oppShips {
   grid-area: oppShips;
+  width: 180px;
+  align-self: center;
+  justify-self: center;
 }
 
-.container {
+.game-container {
   display: grid;
   width: 90vw;
-  height: 90vh;
-  grid-template-columns: 1% 35% 35% auto;
+  height: 80vh;
+  grid-template-columns: 10% 40% 40% 10%;
   column-gap: 50px;
-  grid-template-rows: 10% auto;
+  grid-template-rows: 10% 100%;
   grid-template-areas:
-  ". yourTitle oppTitle ." 
-  ". yourBoard oppBoard chat"
-  ". yourShips oppShips chat"
-
+  "yourShips yourTitle oppTitle oppShips" 
+  "yourShips yourBoard oppBoard oppShips"
 }

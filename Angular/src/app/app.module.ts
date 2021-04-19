@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { WelcomeComponent } from './welcome/welcome.component';
-import { PlayComponent } from './play/play.component';
+import { SearchComponent } from './search/search.component';
 import { TutorialComponent } from './tutorial/tutorial.component';
 import { RegisterComponent } from './register/register.component';
 import { GameComponent } from './game/game.component';
@@ -21,17 +21,19 @@ import {IgxButtonModule } from 'igniteui-angular';
 import {HttpClientModule } from '@angular/common/http';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatIconModule} from '@angular/material/icon';
+import {MatDividerModule} from '@angular/material/divider';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     WelcomeComponent,
-    PlayComponent,
+    SearchComponent,
     TutorialComponent,
     RegisterComponent,
     GameComponent,
-    TileComponent
+    TileComponent, 
   ],
   imports: [
     BrowserModule,
@@ -45,7 +47,9 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatButtonModule,
     HttpClientModule,
     MatGridListModule,
-    MatSnackBarModule
+    MatSnackBarModule, 
+    MatIconModule, 
+    MatDividerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
