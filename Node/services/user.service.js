@@ -5,8 +5,6 @@ const bcrypt = require('bcryptjs');
 const db = require('../_helpers/database.js');
 const User = db.User;
 
-
-
 module.exports = {
     authenticate,
     addUser
