@@ -1,9 +1,16 @@
 <div class="game-container">
   <mat-card class="yourTitle">Your Board</mat-card>
   <mat-grid-list class="yourBoard" cols="10">
-    <mat-grid-tile *ngFor="let tile of yourBoard;">{{tile.coord}}</mat-grid-tile>
+    <mat-grid-tile *ngFor="let tile of yourBoard;">
+      {{tile.coord}}
+    </mat-grid-tile>
+
+    <div class="boundary">
+      <div class="courier-box" [cdkDragData]="yourShips[0]" cdkDragBoundary=".boundary" [style.width.%]="width*yourShips[0].holes" [style.height.%]="height" cdkDrag>{{yourShips[0].pos}}</div>
+    </div>
   </mat-grid-list>
 
+  <button mat-button (click)="updateShipCoord()">Update coord</button>
   <mat-card class="oppTitle">Opponent's Board</mat-card>
   <mat-grid-list class="oppBoard" cols="10">
     <mat-grid-tile *ngFor="let tile of oppBoard;">

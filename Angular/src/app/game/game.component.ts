@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Tile } from '../_models/tile';
+import { Ship } from '../_models/ship';
 
-interface ship {
-  name: string,
-  holes: number,
-}
 
 @Component({
   selector: 'app-game',
@@ -14,48 +11,52 @@ interface ship {
 
 export class GameComponent implements OnInit {
 
+  width = 10;
+  height = 10;
   yourBoard: Tile[];
-  yourShips: ship[];
-  oppShips: ship[];
   oppBoard: Tile[];
-
+  yourShips: Ship[];
+  oppShips: Ship[];
   showChat: Boolean;
 
   constructor() { }
 
+
   initBoard(): void {
+
     this.yourBoard = [{
       coord: 0,
-      hasBoat: false,
+      ship: undefined,
       isBombed: false
     }];
 
     this.oppBoard = [{
       coord: 0,
-      hasBoat: false,
+      ship: undefined,
       isBombed: false
     }];
 
     for (let i = 1; i <= 99; i++) {
       this.yourBoard.push({
         coord: i,
-        hasBoat: false,
+        ship: null,
         isBombed: false
       });
 
       this.oppBoard.push({
         coord: i,
-        hasBoat: false,
+        ship: null,
         isBombed: false
       });
     }
   }
 
-  labelShips(): ship[] {
+  labelShips(): Ship[] {
 
     let ships = [{
       name: "Courier",
-      holes: 5
+      holes: 5,
+      pos: [0, 1, 2, 3, 4]
     }];
 
     for (let i = 4; i >= 1; i--) {
@@ -65,13 +66,17 @@ export class GameComponent implements OnInit {
         ...(i === 3 && { name: "Cruiser" }),
         ...(i === 2 && { name: "Submarine" }),
         ...(i === 1 && { name: "Destroyer" }),
+        ...(i === 4 && { pos: [10, 11, 12, 13] }),
+        ...(i === 3 && { pos: [20, 21, 22] }),
+        ...(i === 2 && { pos: [30, 31] }),
+        ...(i === 1 && { pos: [31] }),
       });
     }
     return ships;
   }
 
   initShips(): void {
-    
+
     this.yourShips = this.labelShips();
     this.oppShips = this.labelShips();
   }
@@ -82,4 +87,12 @@ export class GameComponent implements OnInit {
     this.initShips();
   }
 
+  updateShipCoord() {
+
+  }
+
+  test(event) {
+    console.log(event);
+    return;
+  }
 }

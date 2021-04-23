@@ -10,6 +10,7 @@ import { TutorialComponent } from './tutorial/tutorial.component';
 import { RegisterComponent } from './register/register.component';
 import { GameComponent } from './game/game.component';
 import { TileComponent } from './game/tile/tile.component';
+import { ShipComponent } from './game/ship/ship.component';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatCardModule} from '@angular/material/card';
@@ -23,6 +24,8 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatDividerModule} from '@angular/material/divider';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+// import { AngularDraggableModule } from 'angular2-draggable';
 
 @NgModule({
   declarations: [
@@ -33,7 +36,8 @@ import {MatDividerModule} from '@angular/material/divider';
     TutorialComponent,
     RegisterComponent,
     GameComponent,
-    TileComponent, 
+    TileComponent,
+    ShipComponent, 
   ],
   imports: [
     BrowserModule,
@@ -49,7 +53,8 @@ import {MatDividerModule} from '@angular/material/divider';
     MatGridListModule,
     MatSnackBarModule, 
     MatIconModule, 
-    MatDividerModule
+    MatDividerModule, 
+    DragDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Tile} from '../../_models/tile';
+import {Ship} from '../../_models/ship';
 
 @Component({
   selector: 'app-tile',
@@ -12,8 +13,13 @@ export class TileComponent implements OnInit {
 
   ngOnInit(): void {
     this.tile.coord = null;
-    this.tile.hasBoat = false;
+    this.tile.ship = undefined;
     this.tile.isBombed = false;
   }
+  
+  setShip(ship: Ship): void {
+    this.tile.ship = ship;
+  }
+
   
 }

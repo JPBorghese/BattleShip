@@ -1,6 +1,7 @@
+import { Ship } from "./ship";
 
 export class Tile {
 	coord: number;
-	hasBoat: boolean;
+	ship: Ship;
 	isBombed: boolean;
 }
