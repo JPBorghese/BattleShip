@@ -27,6 +27,8 @@ import { TileComponent } from './game/tile/tile.component';
 import { ShipComponent } from './game/ship/ship.component';
 import { BoardComponent } from './game/board/board.component';
 
+import { WebsocketService } from './_services/websocket.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,7 +59,7 @@ import { BoardComponent } from './game/board/board.component';
     MatDividerModule, 
     DragDropModule
   ],
-  providers: [],
+  providers: [WebsocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

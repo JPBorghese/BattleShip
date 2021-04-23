@@ -25,3 +25,19 @@ const port = process.env.NODE_ENV === 'production' ? (process.env.PORT || 80) : 
 app.listen(port, function () {
   console.log('Server listening on port ' + port);
 });
+
+// websocket setup
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({port: 8080});
+
+wss.on('connection', ws => {
+  ws.on('message', message => {
+    console.log(`Received message => ${message}`);
+    ws.send(`Response`);
+  });
+  ws.on('error', err => {
+    console.log(`error => ${err}`);
+    ws.send(`error`);
+  });
+  ws.send(`Hello! Message from Server!!`);
+});
