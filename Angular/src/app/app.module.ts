@@ -1,17 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
-import { WelcomeComponent } from './welcome/welcome.component';
-import { SearchComponent } from './search/search.component';
-import { TutorialComponent } from './tutorial/tutorial.component';
-import { RegisterComponent } from './register/register.component';
-import { GameComponent } from './game/game.component';
-import { TileComponent } from './game/tile/tile.component';
-import { ShipComponent } from './game/ship/ship.component';
-
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -25,7 +14,18 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatDividerModule} from '@angular/material/divider';
 import {DragDropModule} from '@angular/cdk/drag-drop';
-// import { AngularDraggableModule } from 'angular2-draggable';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { LoginComponent } from './login/login.component';
+import { WelcomeComponent } from './welcome/welcome.component';
+import { SearchComponent } from './search/search.component';
+import { TutorialComponent } from './tutorial/tutorial.component';
+import { RegisterComponent } from './register/register.component';
+import { GameComponent } from './game/game.component';
+import { TileComponent } from './game/tile/tile.component';
+import { ShipComponent } from './game/ship/ship.component';
+import { BoardComponent } from './game/board/board.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +37,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     RegisterComponent,
     GameComponent,
     TileComponent,
-    ShipComponent, 
+    ShipComponent,
+    BoardComponent, 
   ],
   imports: [
     BrowserModule,
