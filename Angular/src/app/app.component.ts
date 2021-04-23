@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import {AuthService} from './_services/auth';
 
-import {WebsocketService} from './_services/websocket.service';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -11,8 +9,7 @@ import {WebsocketService} from './_services/websocket.service';
 export class AppComponent {
   title = 'BattleShip';
 
-  constructor(private authService: AuthService,
-    private socket: WebsocketService) {}
+  constructor(private authService: AuthService) {}
 
   isLoggedIn() {
     return this.authService.currentUserValue;
@@ -20,9 +17,5 @@ export class AppComponent {
 
   logout() {
     this.authService.logout();
-  }
-
-  sendMsg() {
-    this.socket.send('hello');
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Ship } from '../_models/ship';
 import { Board } from '../_models/board';
 
+import {WebsocketService} from '../_services/websocket.service';
 
 @Component({
   selector: 'app-game',
@@ -19,7 +20,7 @@ export class GameComponent implements OnInit {
   oppShips: Ship[];
   showChat: Boolean;
 
-  constructor() { }
+  constructor(private socket: WebsocketService) { }
 
   ngOnInit(): void {
     this.showChat = false;
@@ -28,6 +29,10 @@ export class GameComponent implements OnInit {
 
   updateShipCoord() {
 
+  }
+
+  send(msg) {
+    this.socket.send('HI');
   }
 
   test(event) {
