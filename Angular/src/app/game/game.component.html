@@ -1,7 +1,17 @@
 <div class="game-container">
-  <mat-card class="leftTitle">Your Board</mat-card>
-  <board-component class="leftBoard" [tiles]="leftBoard" [ships]="leftShips" (placeEvent)="update($event)"></board-component>
-  <board-component class="rightBoard" [tiles]="rightBoard" [ships]="rightShips"></board-component>
+  <mat-card class="leftTitle"> {{leftBoard.user}}'s Board</mat-card>
+
+  <mat-grid-list class="leftBoard" cols="10">
+    <mat-grid-tile *ngFor="let tile of leftBoard.tiles;" (click)="update(tile.coord, leftBoard)" [style.background]="shipColor(tile.ship)">
+      {{tile.coord}}</mat-grid-tile>
+  </mat-grid-list>
+  <button mat-button class="resetShipsLeft" *ngIf="placingShips(leftBoard)" (click)="leftBoard = resetShips(leftBoard)">Reset Ships</button>
+
+  <mat-grid-list class="rightBoard" cols="10">
+    <mat-grid-tile *ngFor="let tile of rightBoard.tiles;" (click)="update(tile.coord, rightBoard)" [style.background]="shipColor(tile.ship)">
+      {{tile.coord}}</mat-grid-tile>
+  </mat-grid-list>
+  <button mat-button class="resetShipsRight" *ngIf="placingShips(rightBoard)" (click)="resetShips(rightBoard)">Reset Ships</button>
 
   <mat-card class="rightTitle">Opponent's Board</mat-card>
   <mat-card class="leftShips">
@@ -9,7 +19,7 @@
       Your Ships
       <mat-divider></mat-divider>
     </mat-card-title>
-    <mat-card-content *ngFor="let ship of leftShips;">
+    <mat-card-content *ngFor="let ship of leftBoard.ships">
       {{ship.name}}: {{ship.holes}} left
     </mat-card-content>
   </mat-card>
@@ -19,7 +29,7 @@
       Opponent Ships
       <mat-divider></mat-divider>
     </mat-card-title>
-    <mat-card-content *ngFor="let ship of rightShips;">
+    <mat-card-content *ngFor="let ship of rightBoard.ships;">
       {{ship.name}}: {{ship.holes}} left
     </mat-card-content>
   </mat-card>
@@ -33,5 +43,3 @@
     <mat-divider></mat-divider>
   </mat-card>
 </div>
-
-<button mat-button (click)="send($event)">Submit</button>

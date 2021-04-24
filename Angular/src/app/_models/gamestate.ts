@@ -4,6 +4,7 @@ export enum GameState {
     placeCruiser,
     placeSub,
     placeDestroyer,
+    waitForOpponent, 
     fireRocket, 
     gameOver
 }

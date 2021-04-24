@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Board } from "../../_models/board";
 import { Tile } from "../../_models/tile";
 import { Ship } from "../../_models/ship";
-import { GameState } from 'src/app/_models/gamestate';
 
 
 @Component({
@@ -11,31 +10,34 @@ import { GameState } from 'src/app/_models/gamestate';
   styleUrls: ['./board.component.css']
 })
 export class BoardComponent implements OnInit {
-  @Input() tiles: Tile[];
-  @Input() ships: Ship[];
+  @Input() leftTiles: Tile[];
+  @Input() rightTiles: Tile[];
+  @Input() leftShips: Ship[];
+  @Input() rightShips: Ship[];
   @Output() placeEvent = new EventEmitter<number>();
 
   constructor() { }
 
-  initTiles() {
-    this.tiles = [{
+  initTiles(): Tile[] {
+    let tiles;
+    tiles = [{
       coord: 0,
       ship: undefined,
       isBombed: false
     }];
 
     for (let i = 1; i <= 99; i++) {
-      this.tiles.push({
+      tiles.push({
         coord: i,
         ship: null,
         isBombed: false
       });
     }
 
+    return tiles;
   }
 
-  labelShips(): Ship[] {
-
+  private initShips(): Ship[] {
     let ships = [{
       name: "Courier",
       holes: 5,
@@ -52,18 +54,14 @@ export class BoardComponent implements OnInit {
         ...(i === 1 && { name: "Destroyer" }),
       });
     }
-    return ships;
-  }
-
-  private initShips(): void {
-    this.ships = this.labelShips();
 
     //Update board vars
-    for (let ship of this.ships) {
-      for (let pos of ship.pos) {
-        this.tiles[pos].ship = ship;
-      }
-    }
+    // for (let ship of ships) {
+    //   for (let pos of ship.pos) {
+    //     this.tiles[pos].ship = ship;
+    //   }
+    // }
+    return ships;
   }
 
   shipColor(ship: Ship): String {
@@ -86,8 +84,11 @@ export class BoardComponent implements OnInit {
   place(coord: number) {
     this.placeEvent.emit(coord);
   }
+
   ngOnInit(): void {
-    this.initTiles();
-    this.initShips();
+    this.leftTiles = this.initTiles();
+    this.rightTiles = this.initTiles();
+    this.leftShips = this.initShips();
+    this.rightShips = this.initShips();
   }
 }

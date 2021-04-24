@@ -10,6 +10,14 @@
   justify-self: center;
 }
 
+.resetShipsLeft {
+  grid-area: resetShipsLeft;
+}
+
+.resetShipsRight {
+  grid-area: resetShipsRight;
+}
+
 .leftBoard {
   grid-area: leftBoard;
 }
@@ -58,8 +66,9 @@
   height: 80vh;
   grid-template-columns: 10% 35% 35% 10%;
   column-gap: 50px;
-  grid-template-rows: 10% 100%;
+  grid-template-rows: 10% auto;
   grid-template-areas:
   "leftShips leftTitle rightTitle rightShips" 
   "leftShips leftBoard rightBoard rightShips"
+  ". resetShipsLeft resetShipsRight. "
 }
