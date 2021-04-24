@@ -6,6 +6,7 @@ import { GameState } from '../_models/gamestate';
 import { BoardComponent } from './board/board.component';
 import { NotificationService } from '../_services/notification.service';
 
+import {WebsocketService} from '../_services/websocket.service';
 
 @Component({
   selector: 'app-game',
@@ -27,7 +28,8 @@ export class GameComponent implements AfterViewInit {
   state: GameState;
 
   constructor(private cdr: ChangeDetectorRef,
-    private notif: NotificationService
+    private notif: NotificationService, 
+    private socket: WebsocketService
   ) { }
 
   ngAfterViewInit() {
@@ -106,5 +108,8 @@ export class GameComponent implements AfterViewInit {
         break;
       }
     }
+  }
+  send(msg) {
+    this.socket.send('HI');
   }
 }

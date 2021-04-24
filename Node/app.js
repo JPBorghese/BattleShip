@@ -28,16 +28,16 @@ app.listen(port, function () {
 
 // websocket setup
 const WebSocket = require('ws');
+const webservice = require('./services/websocket.service')
 const wss = new WebSocket.Server({port: 8080});
 
+var clients = [];
+
 wss.on('connection', ws => {
-  ws.on('message', message => {
-    console.log(`Received message => ${message}`);
-    ws.send(`Response`);
-  });
-  ws.on('error', err => {
-    console.log(`error => ${err}`);
-    ws.send(`error`);
-  });
+  clients.push(ws);
+  ws.on('message', msg => webservice.onMessage(msg));
+  ws.on('error', err => webservice.onError(err));
   ws.send(`Hello! Message from Server!!`);
 });
+
+exports.clients = clients;
