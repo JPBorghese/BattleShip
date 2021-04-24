@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Board } from "../../_models/board";
 import { Tile } from "../../_models/tile";
 import { Ship } from "../../_models/ship";
+import { GameState } from 'src/app/_models/gamestate';
 
 
 @Component({
@@ -10,10 +11,10 @@ import { Ship } from "../../_models/ship";
   styleUrls: ['./board.component.css']
 })
 export class BoardComponent implements OnInit {
-  @Input() board: Board;
-  
-  tiles: Tile[]
-  ships: Ship[]
+  @Input() tiles: Tile[];
+  @Input() ships: Ship[];
+  @Output() placeEvent = new EventEmitter<number>();
+
   constructor() { }
 
   initTiles() {
@@ -30,6 +31,7 @@ export class BoardComponent implements OnInit {
         isBombed: false
       });
     }
+
   }
 
   labelShips(): Ship[] {
@@ -37,41 +39,53 @@ export class BoardComponent implements OnInit {
     let ships = [{
       name: "Courier",
       holes: 5,
-      pos: [0, 1, 2, 3, 4]
+      pos: [],
     }];
 
     for (let i = 4; i >= 1; i--) {
       ships.push({
         holes: i,
+        pos: [],
         ...(i === 4 && { name: "Battleship" }),
         ...(i === 3 && { name: "Cruiser" }),
         ...(i === 2 && { name: "Submarine" }),
         ...(i === 1 && { name: "Destroyer" }),
-        ...(i === 4 && { pos: [10, 11, 12, 13] }),
-        ...(i === 3 && { pos: [20, 21, 22] }),
-        ...(i === 2 && { pos: [30, 31] }),
-        ...(i === 1 && { pos: [31] }),
       });
     }
     return ships;
   }
 
-  initShips(): void {
+  private initShips(): void {
     this.ships = this.labelShips();
 
     //Update board vars
-    
+    for (let ship of this.ships) {
+      for (let pos of ship.pos) {
+        this.tiles[pos].ship = ship;
+      }
+    }
   }
 
-  // shipColor(tile: Tile): String {
-  //   for (let ship of this.ships) {
-  //     for (let i = 0; i < ship.pos.length; i++) {
-  //       if (this.tiles.includes(ship.pos[i]))
-  //     }
-  //   }
-  // }
+  shipColor(ship: Ship): String {
+    if (ship) {
+      if (ship.name === "Courier") {
+        return "green";
+      } else if (ship.name === "Destroyer") {
+        return "yellow";
+      } else if (ship.name === "Battleship") {
+        return "black";
+      } else if (ship.name === "Cruiser") {
+        return "orange";
+      } else if (ship.name === "Submarine") {
+        return "red";
+      }
+    }
+    return "lightblue";
+  }
 
-
+  place(coord: number) {
+    this.placeEvent.emit(coord);
+  }
   ngOnInit(): void {
     this.initTiles();
     this.initShips();

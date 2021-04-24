@@ -23,8 +23,6 @@ import { SearchComponent } from './search/search.component';
 import { TutorialComponent } from './tutorial/tutorial.component';
 import { RegisterComponent } from './register/register.component';
 import { GameComponent } from './game/game.component';
-import { TileComponent } from './game/tile/tile.component';
-import { ShipComponent } from './game/ship/ship.component';
 import { BoardComponent } from './game/board/board.component';
 
 import { WebsocketService } from './_services/websocket.service';
@@ -38,8 +36,6 @@ import { WebsocketService } from './_services/websocket.service';
     TutorialComponent,
     RegisterComponent,
     GameComponent,
-    TileComponent,
-    ShipComponent,
     BoardComponent, 
   ],
   imports: [

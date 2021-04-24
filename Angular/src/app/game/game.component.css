@@ -1,11 +1,11 @@
-.yourTitle {
-  grid-area: yourTitle;
+.leftTitle {
+  grid-area: leftTitle;
   align-self: end;
   justify-self: center;
 }
 
-.oppTitle {
-  grid-area: oppTitle;
+.rightTitle {
+  grid-area: rightTitle;
   align-self: end;
   justify-self: center;
 }
@@ -38,28 +38,28 @@
   bottom: 36px;
 }
 
-.yourShips {
-  grid-area: yourShips;
-  width: 180px;
+.leftShips {
+  grid-area: leftShips;
+  /* width: 180px; */
   align-self: center;
   justify-self: center;
 }
 
-.oppShips {
-  grid-area: oppShips;
-  width: 180px;
+.rightShips {
+  grid-area: rightShips;
+  /* width: 180px; */
   align-self: center;
   justify-self: center;
 }
 
 .game-container {
   display: grid;
-  width: 90vw;
+  /* width: 50vw; */
   height: 80vh;
-  grid-template-columns: 10% 40% 40% 10%;
+  grid-template-columns: 10% 35% 35% 10%;
   column-gap: 50px;
   grid-template-rows: 10% 100%;
   grid-template-areas:
-  "yourShips yourTitle oppTitle oppShips" 
-  "yourShips leftBoard rightBoard oppShips"
+  "leftShips leftTitle rightTitle rightShips" 
+  "leftShips leftBoard rightBoard rightShips"
 }

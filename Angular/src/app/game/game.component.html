@@ -1,25 +1,25 @@
 <div class="game-container">
-  <mat-card class="yourTitle">Your Board</mat-card>
-  <board-component class="leftBoard" [board]="leftBoard"></board-component>
-  <board-component class="rightBoard" [board]="rightBoard"></board-component>
+  <mat-card class="leftTitle">Your Board</mat-card>
+  <board-component class="leftBoard" [tiles]="leftBoard" [ships]="leftShips" (placeEvent)="update($event)"></board-component>
+  <board-component class="rightBoard" [tiles]="rightBoard" [ships]="rightShips"></board-component>
 
-  <mat-card class="oppTitle">Opponent's Board</mat-card>
-  <mat-card class="yourShips">
+  <mat-card class="rightTitle">Opponent's Board</mat-card>
+  <mat-card class="leftShips">
     <mat-card-title>
       Your Ships
       <mat-divider></mat-divider>
     </mat-card-title>
-    <mat-card-content *ngFor="let ship of yourShips;">
+    <mat-card-content *ngFor="let ship of leftShips;">
       {{ship.name}}: {{ship.holes}} left
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="oppShips">
+  <mat-card class="rightShips">
     <mat-card-title>
       Opponent Ships
       <mat-divider></mat-divider>
     </mat-card-title>
-    <mat-card-content *ngFor="let ship of oppShips;">
+    <mat-card-content *ngFor="let ship of rightShips;">
       {{ship.name}}: {{ship.holes}} left
     </mat-card-content>
   </mat-card>
