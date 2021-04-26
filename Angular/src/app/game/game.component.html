@@ -1,19 +1,19 @@
 <div class="game-container">
-  <mat-card class="leftTitle"> {{leftBoard.user}}'s Board</mat-card>
+  <mat-card class="leftTitle"> {{leftBoard.username}}'s Board</mat-card>
 
   <mat-grid-list class="leftBoard" cols="10">
-    <mat-grid-tile *ngFor="let tile of leftBoard.tiles;" (click)="update(tile.coord, leftBoard)" [style.background]="shipColor(tile.ship)">
+    <mat-grid-tile *ngFor="let tile of leftBoard.tiles;" (click)="update(tile.coord, leftBoard)" [style.background]="shipColor(tile.ship, leftBoard)">
       {{tile.coord}}</mat-grid-tile>
   </mat-grid-list>
   <button mat-button class="resetShipsLeft" *ngIf="placingShips(leftBoard)" (click)="leftBoard = resetShips(leftBoard)">Reset Ships</button>
 
   <mat-grid-list class="rightBoard" cols="10">
-    <mat-grid-tile *ngFor="let tile of rightBoard.tiles;" (click)="update(tile.coord, rightBoard)" [style.background]="shipColor(tile.ship)">
+    <mat-grid-tile *ngFor="let tile of rightBoard.tiles;" (click)="update(tile.coord, rightBoard)" [style.background]="shipColor(tile.ship, rightBoard)">
       {{tile.coord}}</mat-grid-tile>
   </mat-grid-list>
   <button mat-button class="resetShipsRight" *ngIf="placingShips(rightBoard)" (click)="resetShips(rightBoard)">Reset Ships</button>
 
-  <mat-card class="rightTitle">Opponent's Board</mat-card>
+  <mat-card class="rightTitle">{{rightBoard.username}}'s Board</mat-card>
   <mat-card class="leftShips">
     <mat-card-title>
       Your Ships

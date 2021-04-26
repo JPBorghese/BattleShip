@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Ship } from '../_models/ship';
 import { Tile } from '../_models/tile';
 import { GameState } from '../_models/gamestate';
@@ -22,6 +22,7 @@ export class GameComponent implements OnInit {
   showChat: Boolean;
   state: GameState;
   user: User;
+  cpu: boolean;
   constructor(private notif: NotificationService,
     private socket: WebsocketService,
     private auth: AuthService
@@ -32,29 +33,62 @@ export class GameComponent implements OnInit {
     this.showChat = false;
 
     this.leftBoard = {
-      user: "",
+      username: "",
       state: GameState.placeCourier,
       tiles: this.initTiles(),
       ships: this.initShips()
     }
 
     this.rightBoard = {
-      user: "CPU",
+      username: "",
       state: GameState.placeCourier,
       tiles: this.initTiles(),
       ships: this.initShips()
     }
 
+    this.initCPU();
+    this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
+  }
+
+  initCPU() {
+    this.user = {
+      username: "CPU",
+    }
+    this.rightBoard = {
+      username: "CPU",
+      state: GameState.placeCourier,
+      tiles: this.initTiles(),
+      ships: this.initShips()
+    }
+
+    //hard code locations for now
+    for (let i = 0; i < 5; i++) {
+      this.update(i, this.rightBoard);
+    } 
+
+    for (let i = 10; i < 14; i++) {
+      this.update(i, this.rightBoard);
+    } 
+
+    for (let i = 20; i < 23; i++) {
+      this.update(i, this.rightBoard);
+    } 
+
+    for (let i = 30; i < 32; i++) {
+      this.update(i, this.rightBoard);
+    } 
+
+    this.update(40, this.rightBoard);
+
     this.auth.currentUser.subscribe((user) => {
       if (user) {
         this.user = user;
-        this.leftBoard.user = user.username;
+        this.leftBoard.username = user.username;
       } else {
-        this.leftBoard.user = "Guest";
+        this.leftBoard.username = "Guest";
       }
     })
 
-    this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
   }
 
   initTiles(): Tile[] {
@@ -97,8 +131,8 @@ export class GameComponent implements OnInit {
     return ships;
   }
 
-  shipColor(ship: Ship): String {
-    if (ship) {
+  shipColor(ship: Ship, board: Board): String {
+    if (ship && board.username === this.user.username) {
       if (ship.name === "Courier") {
         return "green";
       } else if (ship.name === "Destroyer") {
@@ -159,54 +193,58 @@ export class GameComponent implements OnInit {
   }
 
   placingShips(board): boolean {
-    return board.state === GameState.placeCourier || 
-    board.state === GameState.placeBattleship || 
-    board.state === GameState.placeCruiser || 
-    board.state === GameState.placeSub || 
-    board.state === GameState.placeDestroyer;
+    return board.state === GameState.placeCourier ||
+      board.state === GameState.placeBattleship ||
+      board.state === GameState.placeCruiser ||
+      board.state === GameState.placeSub ||
+      board.state === GameState.placeDestroyer;
   }
 
   nextState(state): GameState {
-    let res = (state === GameState.placeCourier) ? GameState.placeBattleship:
-    (state === GameState.placeBattleship) ? GameState.placeCruiser:
-    (state === GameState.placeCruiser) ? GameState.placeSub: 
-    (state === GameState.placeSub) ? GameState.placeDestroyer:
-    (state === GameState.placeDestroyer) ? GameState.waitForOpponent: null;
+    let res = (state === GameState.placeCourier) ? GameState.placeBattleship :
+      (state === GameState.placeBattleship) ? GameState.placeCruiser :
+        (state === GameState.placeCruiser) ? GameState.placeSub :
+          (state === GameState.placeSub) ? GameState.placeDestroyer :
+            (state === GameState.placeDestroyer) ? GameState.waitForOpponent : null;
     return res;
   }
 
   nextShip(state): String {
-    let res = (state === GameState.placeCourier) ? "Battleship":
-    (state === GameState.placeBattleship) ? "Cruiser":
-    (state === GameState.placeCruiser) ? "Sub": 
-    (state === GameState.placeSub) ? "Destroyer":
-    (state === GameState.placeDestroyer) ? "waitForOpponent": null;
+    let res = (state === GameState.placeCourier) ? "Battleship" :
+      (state === GameState.placeBattleship) ? "Cruiser" :
+        (state === GameState.placeCruiser) ? "Sub" :
+          (state === GameState.placeSub) ? "Destroyer" :
+            (state === GameState.placeDestroyer) ? "waitForOpponent" : null;
     return res;
   }
 
   placeShip(chosenShip, placelimit, shipsPlaced, coord, board) {
-    let shipName = chosenShip.name;
-    if (shipsPlaced.length < placelimit && this.validPlacement(shipsPlaced, coord, board)) {
-      chosenShip.pos.push(coord);
-      board.tiles[coord].ship = chosenShip;
-      this.notif.showNotif("Placed " + shipName + " on coordinate " + coord + ", " + (placelimit - shipsPlaced.length - 1) + " left", "Ok");
-      if (shipsPlaced.length === placelimit - 1) {
-        let nextShip = this.nextShip(board.state);
-        board.state = this.nextState(board.state);
-        if (nextShip !== "waitForOpponent") {
-          this.notif.showNotif("Place " + nextShip + " by clicking on a coordinate on your board", "Ok");
-        } else {
-          this.notif.showNotif("Waiting for opponent to finish placing", "Ok");
+    if (this.user.username === board.username) {
+      let shipName = chosenShip.name;
+      if (shipsPlaced.length < placelimit && this.validPlacement(shipsPlaced, coord, board)) {
+        chosenShip.pos.push(coord);
+        board.tiles[coord].ship = chosenShip;
+        this.notif.showNotif("Placed " + shipName + " on coordinate " + coord + ", " + (placelimit - shipsPlaced.length - 1) + " left", "Ok");
+        if (shipsPlaced.length === placelimit - 1) {
+          let nextShip = this.nextShip(board.state);
+          board.state = this.nextState(board.state);
+          if (nextShip !== "waitForOpponent") {
+            this.notif.showNotif("Place " + nextShip + " by clicking on a coordinate on your board", "Ok");
+          } else {
+            this.notif.showNotif("Waiting for opponent to finish placing", "Ok");
+          }
         }
+      } else {
+        this.notif.showNotif("Invalid Placement", "Ok");
       }
     } else {
-      this.notif.showNotif("Invalid Placement", "Ok");
+      this.notif.showNotif("Not your board", "Ok");
     }
   }
 
   resetShips(board: Board): Board {
     board = {
-      user: board.user,
+      username: board.username,
       state: GameState.placeCourier,
       tiles: this.initTiles(),
       ships: this.initShips()
@@ -215,75 +253,81 @@ export class GameComponent implements OnInit {
     return board;
   }
 
+  fire(coord: number, board: Board) {
+    if (board.tiles[coord].ship) {
+      this.notif.showNotif("hit!", "Ok");
+    } else {
+      this.notif.showNotif("miss!", "Ok");
+    }
+  }
+
   update(coord: number, board: Board) {
-    let chosenShip: Ship;
-    let placelimit: number;
     let shipsPlaced: Tile[];
 
     switch (board.state) {
       case GameState.placeCourier: {
 
-        chosenShip = board.ships[0];
-        placelimit = board.ships[0].holes;
         shipsPlaced = board.tiles.filter((tile) => {
           if (tile.ship) {
             return tile.ship.name === "Courier";
           }
         })
 
-        this.placeShip(chosenShip, placelimit, shipsPlaced, coord, board);
+        this.placeShip(board.ships[0], board.ships[0].holes, shipsPlaced, coord, board);
         break;
       }
 
       case GameState.placeBattleship: {
-        chosenShip = board.ships[1];
-        placelimit = board.ships[1].holes;
         shipsPlaced = board.tiles.filter((tile) => {
           if (tile.ship) {
             return tile.ship.name === "Battleship";
           }
         })
 
-        this.placeShip(chosenShip, placelimit, shipsPlaced, coord, board);
+        this.placeShip(board.ships[1], board.ships[1].holes, shipsPlaced, coord, board);
         break;
       }
 
       case GameState.placeCruiser: {
-        chosenShip = board.ships[2];
-        placelimit = board.ships[2].holes;
         shipsPlaced = board.tiles.filter((tile) => {
           if (tile.ship) {
             return tile.ship.name === "Cruiser";
           }
         })
 
-        this.placeShip(chosenShip, placelimit, shipsPlaced, coord, board);
+        this.placeShip(board.ships[2], board.ships[2].holes, shipsPlaced, coord, board);
         break;
       }
 
       case GameState.placeSub: {
-        chosenShip = board.ships[3];
-        placelimit = board.ships[3].holes;
         shipsPlaced = board.tiles.filter((tile) => {
           if (tile.ship) {
             return tile.ship.name === "Submarine";
           }
         })
 
-        this.placeShip(chosenShip, placelimit, shipsPlaced, coord, board);
+        this.placeShip(board.ships[3], board.ships[3].holes, shipsPlaced, coord, board);
         break;
       }
 
       case GameState.placeDestroyer: {
-        chosenShip = board.ships[4];
-        placelimit = board.ships[4].holes;
         shipsPlaced = board.tiles.filter((tile) => {
           if (tile.ship) {
             return tile.ship.name === "Destroyer";
           }
         })
 
-        this.placeShip(chosenShip, placelimit, shipsPlaced, coord, board);
+        this.placeShip(board.ships[4], board.ships[4].holes, shipsPlaced, coord, board);
+        if (this.leftBoard.state === GameState.waitForOpponent && this.rightBoard.state === GameState.waitForOpponent) {
+          this.leftBoard.state = GameState.fireRocket;
+          this.rightBoard.state = GameState.fireRocket;
+          this.notif.showNotif("Game Started!", "Ok");
+        }
+        break;
+      }
+
+      case GameState.fireRocket: {
+        this.fire(coord, board);
         break;
       }
     }
