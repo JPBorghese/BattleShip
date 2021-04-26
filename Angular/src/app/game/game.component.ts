@@ -23,6 +23,7 @@ export class GameComponent implements OnInit {
   state: GameState;
   user: User;
   cpu: boolean;
+  leftTurn: boolean;
   constructor(private notif: NotificationService,
     private socket: WebsocketService,
     private auth: AuthService
@@ -32,6 +33,7 @@ export class GameComponent implements OnInit {
   ngOnInit() {
     this.showChat = false;
 
+    this.leftTurn = true;
     this.leftBoard = {
       username: "",
       state: GameState.placeCourier,
@@ -46,6 +48,7 @@ export class GameComponent implements OnInit {
       ships: this.initShips()
     }
 
+    this.hardCodeShips(this.leftBoard);
     this.initCPU();
     this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
   }
@@ -61,25 +64,7 @@ export class GameComponent implements OnInit {
       ships: this.initShips()
     }
 
-    //hard code locations for now
-    for (let i = 0; i < 5; i++) {
-      this.update(i, this.rightBoard);
-    } 
-
-    for (let i = 10; i < 14; i++) {
-      this.update(i, this.rightBoard);
-    } 
-
-    for (let i = 20; i < 23; i++) {
-      this.update(i, this.rightBoard);
-    } 
-
-    for (let i = 30; i < 32; i++) {
-      this.update(i, this.rightBoard);
-    } 
-
-    this.update(40, this.rightBoard);
-
+    this.hardCodeShips(this.rightBoard);
     this.auth.currentUser.subscribe((user) => {
       if (user) {
         this.user = user;
@@ -88,7 +73,49 @@ export class GameComponent implements OnInit {
         this.leftBoard.username = "Guest";
       }
     })
+  }
 
+  hardCodeShips(board: Board) {
+    //hard code locations for now
+    for (let i = 0; i < 5; i++) {
+      board.tiles[i].ship = {
+        name: "Courier",
+        holes: 5,
+        pos: [0, 1, 2, 3, 4],
+      }
+    }
+
+    for (let i = 10; i < 14; i++) {
+      board.tiles[i].ship = {
+        name: "Battleship",
+        holes: 4,
+        pos: [10, 11, 12, 13],
+      }
+    }
+
+    for (let i = 20; i < 23; i++) {
+      board.tiles[i].ship = {
+        name: "Cruiser",
+        holes: 3,
+        pos: [20, 21, 22],
+      }
+    }
+
+    for (let i = 30; i < 32; i++) {
+      board.tiles[i].ship = {
+        name: "Submarine",
+        holes: 2,
+        pos: [30, 31],
+      }
+    }
+
+    board.tiles[40].ship = {
+      name: "Destroyer",
+      holes: 1,
+      pos: [40],
+    }
+
+    board.state = GameState.fireRocket;
   }
 
   initTiles(): Tile[] {
@@ -131,10 +158,14 @@ export class GameComponent implements OnInit {
     return ships;
   }
 
+  disableButtons(board: Board) {
+    return board.state === GameState.fireRocket && board.username === this.user.username;
+  }
+
   shipColor(ship: Ship, board: Board): String {
     if (ship && board.username === this.user.username) {
       if (ship.name === "Courier") {
-        return "green";
+        return "grey";
       } else if (ship.name === "Destroyer") {
         return "yellow";
       } else if (ship.name === "Battleship") {
@@ -142,8 +173,23 @@ export class GameComponent implements OnInit {
       } else if (ship.name === "Cruiser") {
         return "orange";
       } else if (ship.name === "Submarine") {
-        return "red";
+        return "brown";
       }
+    }
+    return "lightblue";
+  }
+
+  shipLabels(ship: Ship): String {
+    if (ship.name === "Courier") {
+      return "grey";
+    } else if (ship.name === "Destroyer") {
+      return "yellow";
+    } else if (ship.name === "Battleship") {
+      return "purple";
+    } else if (ship.name === "Cruiser") {
+      return "orange";
+    } else if (ship.name === "Submarine") {
+      return "brown";
     }
     return "lightblue";
   }
@@ -249,19 +295,20 @@ export class GameComponent implements OnInit {
       tiles: this.initTiles(),
       ships: this.initShips()
     }
-
     return board;
   }
 
-  fire(coord: number, board: Board) {
-    if (board.tiles[coord].ship) {
+  fire(coord: number, otherBoard: Board) {
+    if (otherBoard.tiles[coord].ship) {
       this.notif.showNotif("hit!", "Ok");
     } else {
       this.notif.showNotif("miss!", "Ok");
     }
+    otherBoard.tiles[coord].isBombed = true;
   }
 
-  update(coord: number, board: Board) {
+
+  update(coord: number, board: Board, otherBoard: Board) {
     let shipsPlaced: Tile[];
 
     switch (board.state) {
@@ -327,6 +374,11 @@ export class GameComponent implements OnInit {
       }
 
       case GameState.fireRocket: {
+        if (this.leftTurn) {
+          this.leftTurn = false;
+        } else {
+          this.leftTurn = true;
+        }
         this.fire(coord, board);
         break;
       }
