@@ -1,15 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {AuthService} from '../_services/auth';
 import { Stat } from '../_models/stat';
 
 @Component({
-  selector: 'app-stats',
+  selector: 'stat-component',
   templateUrl: './stats.component.html',
   styleUrls: ['./stats.component.css']
 })
 export class StatsComponent implements OnInit {
   @Input() stat: Stat;
-  @Input() bgColor: string;
 
   ranking;
   username;
@@ -18,17 +16,16 @@ export class StatsComponent implements OnInit {
   score;
   userLogged;
 
-  constructor(private auth : AuthService
+  constructor(
     ) { }
 
   ngOnInit(): void {
+    console.log(this.stat);
     this.ranking = this.stat.ranking;
     this.wins = this.stat.wins;
+    this.username = this.stat.username;
     this.loss = this.stat.loss;
     this.score = this.stat.score;
-    this.auth.currentUser.subscribe( user => {
-      this.userLogged = user.username;
-    });
   }
 
 }

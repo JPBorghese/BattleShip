@@ -11,7 +11,7 @@ const jwt = require('./_helpers/jwt');
 // Our error handler
 const errorHandler = require('./_helpers/error_handler');
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 app.use(jwt());

@@ -8,10 +8,10 @@
 
 .mat-card{
     display: grid;
-    grid-template-columns: 200px 200px 200px 200px 200px;
+    grid-template-columns: 20% 20% 20% 20% 20%;
     grid-template-rows: 50px;
     grid-template-areas:
-    "name . . . . .sort";
+    "name . . . sort";
     margin-bottom: 10px;
     margin-top: 10px;
     margin-left: auto;

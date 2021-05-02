@@ -33,7 +33,7 @@ export class GameComponent implements OnInit {
   ngOnInit() {
     this.showChat = false;
 
-    this.leftTurn = true;
+    this.leftTurn = (Math.floor(Math.random() * 2) == 0) ? true : false;
     this.leftBoard = {
       username: "",
       state: GameState.placeCourier,
@@ -48,11 +48,23 @@ export class GameComponent implements OnInit {
       ships: this.initShips()
     }
 
-    this.hardCodeShips(this.leftBoard);
+    // this.hardCodeShips(this.leftBoard);
     this.initCPU();
     this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
   }
 
+  turnIndicator(board: Board) {
+    let color = "border: 4px solid green";
+    let res = "";
+    console.log(this.leftTurn);
+    if (board === this.leftBoard) {
+      res = this.leftTurn == (true) ? color : "";
+    } else {
+      res = this.leftTurn == (false) ? color : "";
+    }
+
+    return res + "; " + "box-sizing: border-box";
+  }
   initCPU() {
     this.user = {
       username: "CPU",

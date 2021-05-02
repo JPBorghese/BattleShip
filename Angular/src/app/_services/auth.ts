@@ -36,7 +36,7 @@ export class AuthService {
       .pipe(map(user => {
         // login successful if there's a jwt token in the response
         if (user && user.token) {
-
+          
           localStorage.setItem('currentUser', JSON.stringify(user));
           this.currentUserSubject.next(user);
         }

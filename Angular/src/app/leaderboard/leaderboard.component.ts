@@ -55,7 +55,7 @@ export class LeaderboardComponent implements OnInit {
 
       },
       error => {
-        this.notif.showNotif(error.toString(), 'warning');
+        console.log(error, 'warning');
       });
   }
 

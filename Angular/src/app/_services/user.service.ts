@@ -9,13 +9,7 @@ import {User} from '../_models/user';
 @Injectable({ providedIn: 'root' })
 export class UserService {
 
-
   constructor(private http: HttpClient) { }
-
-  // getAll() {
-  //    return this.http.get<User[]>(`http://localhost:3030/user/allusers`);
-  // }
-
   
   register(username: string, password: string) {
     //console.log("register ", {username, password});

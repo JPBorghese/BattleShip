@@ -13,8 +13,8 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatDividerModule} from '@angular/material/divider';
-import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatSelectModule} from '@angular/material/select';
+import {MatDialogModule} from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -56,8 +56,9 @@ import { StatsComponent } from './stats/stats.component';
     MatSnackBarModule, 
     MatIconModule, 
     MatDividerModule, 
-    DragDropModule, 
-    MatSelectModule
+    MatSelectModule, 
+    MatDialogModule
+
   ],
   providers: [WebsocketService],
   bootstrap: [AppComponent]
