@@ -11,7 +11,7 @@ const jwt = require('./_helpers/jwt');
 // Our error handler
 const errorHandler = require('./_helpers/error_handler');
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 app.use(jwt());
@@ -25,6 +25,7 @@ const port = process.env.NODE_ENV === 'production' ? (process.env.PORT || 80) : 
 app.listen(port, function () {
   console.log('Server listening on port ' + port);
 });
+
 
 // websocket setup
 const WebSocket = require('ws');

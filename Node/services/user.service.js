@@ -8,7 +8,12 @@ const User = db.User;
 module.exports = {
     authenticate,
     addUser, 
-    getStats
+    getStats,
+    getByUsername
+}
+
+async function getByUsername(username) {
+    return await User.find({username:username});
 }
 
 async function authenticate({ username, password }) {
@@ -16,7 +21,7 @@ async function authenticate({ username, password }) {
     const user = await User.findOne({ username });
     if (user && bcrypt.compareSync(password, user.hash)) {
         const { hash, ...userWithoutHash } = user.toObject();
-        const token = jwt.sign({ id: user._id }, config.secret);
+        const token = jwt.sign({ sub: user._id }, config.secret, { algorithm: 'HS256' });
         return {
             ...userWithoutHash,
             token

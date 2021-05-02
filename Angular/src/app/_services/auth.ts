@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {User} from '../_models/user';
 import {HttpClient} from '@angular/common/http';
+import {HttpHeaders} from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 import {NotificationService} from './notification.service';
@@ -14,6 +15,9 @@ export class AuthService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<any>;  // changed from Observable<User>
 
+
+  private httpOptions;
+
   constructor(private http: HttpClient,
       private notifService: NotificationService,
       private router: Router) {
@@ -22,12 +26,18 @@ export class AuthService {
     // currentUser is turned into an Observable that will allow other parts of the app to subscribe and get notified when currentUserSubject changes.
     this.currentUser = this.currentUserSubject.asObservable();
 
-    //console.log(this.currentUser);
+    this.httpOptions = {
+        Authorization: 'Bearer ' + this.currentUserSubject.value.token
+    };
   }
 
 
   public get currentUserValue(): User {
     return this.currentUserSubject.value;
+  }
+
+  public get httpHeader() {
+    return this.httpOptions;
   }
 
   login(username: string, password: string): Observable<any> {
