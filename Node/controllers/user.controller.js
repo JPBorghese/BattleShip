@@ -21,6 +21,7 @@ function register(req, res, next) {
 }
 
 function getStats(req,res,next){
+    //TODO: return all users from the database and send to the client.
     userService.getStats()
         .then(user => res.json(user))
         .catch(err => next(err));
