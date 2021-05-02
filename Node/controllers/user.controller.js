@@ -2,7 +2,8 @@ const userService = require('../services/user.service');
 
 module.exports = {
     authenticate,
-    register
+    register, 
+    getStats
 };
 
 function authenticate(req, res, next) {
@@ -19,4 +20,10 @@ function register(req, res, next) {
         .catch(err => next(err));
 }
 
+function getStats(req,res,next){
+    //TODO: return all parecords from the database and send to the client.
+    userService.getStats()
+        .then(user => res.json(user))
+        .catch(err => next(err));
+}
 

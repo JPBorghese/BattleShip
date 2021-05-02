@@ -1,0 +1,24 @@
+<mat-card>
+    <div class="name">
+        <form>
+            <mat-form-field>
+                <mat-label>Name filter</mat-label>
+                <input matInput (keyup)="loadRanks(sortfilter, $event.target.value)">
+            </mat-form-field>
+        </form>
+    </div>
+
+    <div class="sort">
+        <mat-form-field>
+            <mat-label>Sort by</mat-label>
+            <mat-select>
+                <mat-option (click)="loadRanks(filter.value, namefilter)" *ngFor="let filter of filters" [value]="filter">
+                    {{filter.title}} </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>  
+</mat-card>
+
+<div>
+    <rank-component *ngFor="let stat of stats" [rank]="rank"></rank-component>
+</div>

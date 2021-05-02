@@ -7,7 +7,8 @@ const User = db.User;
 
 module.exports = {
     authenticate,
-    addUser
+    addUser, 
+    getStats
 }
 
 async function authenticate({ username, password }) {
@@ -37,7 +38,28 @@ async function addUser(userParam) {
         user.hash = bcrypt.hashSync(userParam.password, 10);
     }
 
+    //initialize score, wins, and loss
+    user.score = 0;
+    user.wins = 0;
+    user.loss = 0;
+
     // save user
     await user.save();
+}
 
+async function getStats() {
+    users = await User.find().populate({ path: '_id', select: 'username' });
+    let objs = []
+    users.forEach(function(user) {
+        let obj = {
+            "username": user.username, 
+            "wins": user.wins,
+            "loss": user.loss,
+            "score": user.score,
+            "ranking": 0,
+        }
+
+        objs.push(obj);
+    })
+    return objs;
 }

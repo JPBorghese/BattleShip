@@ -2,6 +2,7 @@
     <div class="btn-group-vertical">
         <button mat-button routerLink="search">PLAY</button>
         <button mat-button routerLink="tutorial">HOW TO PLAY</button>
+        <button mat-button routerLink="leaderboard">LEADERBOARD</button>
         <button mat-button routerLink="login" *ngIf="!isLoggedIn()">LOGIN</button>
         <button mat-button (click)="logout()" *ngIf="isLoggedIn()">LOGOUT</button>
     </div>

@@ -21,4 +21,8 @@ export class UserService {
     //console.log("register ", {username, password});
     return this.http.post<any>(`http://localhost:3030/user/register`, {username, password});
   }
+
+  getstats() {
+    return this.http.get<[]>(`http://localhost:3030/user/getstats`);
+  }
 }

@@ -5,7 +5,7 @@
     transform: translate(50%,-50%);
     text-transform: uppercase;
     font-family: verdana;
-    font-size: 12em;
+    font-size: 11em;
     font-weight: 700;
     color: #30a4e7;
     text-shadow: 1px 1px 1px #919191,
@@ -29,7 +29,7 @@
     border-radius: 50px;
     margin-left: 500px;
     margin-right: 500px;
-    margin-bottom: 50px;
+    margin-bottom: 25px;
     width: 250px;
     height: 64px;
     line-height: 64px;

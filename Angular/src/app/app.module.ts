@@ -14,6 +14,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatDividerModule} from '@angular/material/divider';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {MatSelectModule} from '@angular/material/select';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,9 +24,10 @@ import { SearchComponent } from './search/search.component';
 import { TutorialComponent } from './tutorial/tutorial.component';
 import { RegisterComponent } from './register/register.component';
 import { GameComponent } from './game/game.component';
-import { BoardComponent } from './game/board/board.component';
 
 import { WebsocketService } from './_services/websocket.service';
+import { LeaderboardComponent } from './leaderboard/leaderboard.component';
+import { StatsComponent } from './stats/stats.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,8 @@ import { WebsocketService } from './_services/websocket.service';
     TutorialComponent,
     RegisterComponent,
     GameComponent,
-    BoardComponent, 
+    LeaderboardComponent,
+    StatsComponent, 
   ],
   imports: [
     BrowserModule,
@@ -53,7 +56,8 @@ import { WebsocketService } from './_services/websocket.service';
     MatSnackBarModule, 
     MatIconModule, 
     MatDividerModule, 
-    DragDropModule
+    DragDropModule, 
+    MatSelectModule
   ],
   providers: [WebsocketService],
   bootstrap: [AppComponent]
