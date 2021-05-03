@@ -16,7 +16,8 @@ const MESSAGE_TYPE = {
 	Chat:1,
 	Move:2,
 	OpponentFound:3,
-	SearchForOpponent:4
+	SearchOpponent:4,
+	ShipData:5
 }
 Object.freeze(MESSAGE_TYPE);
 
@@ -49,7 +50,7 @@ function onMessage(message) {
 			break;
 		}
 
-		case MESSAGE_TYPE.SearchForOpponent: {
+		case MESSAGE_TYPE.SearchOpponent: {
 			searchForOpponent(msg.username);
 			break;
 		}
@@ -103,6 +104,7 @@ function searchForOpponent(username) {
 		sendMsg(ws, opponent, MESSAGE_TYPE.OpponentFound);
 		sendMsg(findSocket(opponent), ws._protocol, MESSAGE_TYPE.OpponentFound);
 	} else {
-		sendMsg(ws, 'Searching for opponent', MESSAGE_TYPE.SearchForOpponent);
+		console.log(username, ' searching for opponent');
+		sendMsg(ws, 'Searching for opponent', MESSAGE_TYPE.SearchOpponent);
 	}
 }

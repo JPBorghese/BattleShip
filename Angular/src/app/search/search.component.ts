@@ -18,9 +18,6 @@ export class SearchComponent implements OnInit {
 
   searching() {
     this.dialog.open(searchingDialog);
-  }
-
-  search() {
     this.appComponent.connectSocket();
     this.appComponent.searchOpponent();
   }

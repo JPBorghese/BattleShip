@@ -9,7 +9,8 @@ const MESSAGE_TYPE = {
     Chat:1,
     Move:2,
     OpponentFound:3,
-    SearchOpponent:4
+    SearchOpponent:4,
+    ShipData:5
 }
 Object.freeze(MESSAGE_TYPE);
 
@@ -71,8 +72,6 @@ export class WebsocketService{
             type: MESSAGE_TYPE.SearchOpponent
         }
 
-        console.log(this.username, ' searching for opponent');
-
         this.socket.next(message);
     }
 
@@ -105,6 +104,11 @@ export class WebsocketService{
                 this.opponent = msg.message;
                 console.log('Game Started vs ', this.opponent);
                 this.sendChat('Hello Breh!');
+            }
+
+            case MESSAGE_TYPE.SearchOpponent: {
+                console.log(msg.message);
+                break;
             }
 
             default: {
