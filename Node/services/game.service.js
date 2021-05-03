@@ -1,5 +1,6 @@
 module.exports = {
-    searchForOpponent
+    searchForOpponent,
+	initGame
 }
 
 // user searching for game
@@ -21,7 +22,48 @@ function searchForOpponent(username) {
 	return searching.pop();
 }
 
+let games = [];
 
+
+// returns null if other player has not sent info yet
+// returns username of player to go first
+function initGame(msg) {
+	console.log(msg);
+	let game = findGame(msg.username);
+
+	if (!game) {
+		const newGame = {
+			p1: msg.username,
+			p2: msg.opponent,
+			p1boats: msg.message,
+			p2boats: null
+		}
+
+		games.push(newGame);
+		return null;
+	} else {
+		if (game.p1 === username) {
+			p1boats = msg.message;
+		} else {
+			p2boats = msg.message;
+		}
+
+		return game.p1;
+	}
+}
+
+function findGame(username) {
+	for (let i = 0; i < games.length; i++) {
+		let game = games[i];
+
+		if (game.p1 === username || game.p2 === username) {
+			return games[i];
+		}
+	}
+
+
+	return null;
+}
 
 function printGames() {
 	for (let i = 0; i < games.length; i++) {

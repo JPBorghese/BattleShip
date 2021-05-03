@@ -55,6 +55,14 @@ function onMessage(message) {
 			break;
 		}
 
+		case MESSAGE_TYPE.ShipData: {
+			let first = gameService.initGame(msg);
+
+			if (!first) {
+				sendMsg(findSocket(msg.username), first + 'goes first!', MESSAGE_TYPE.ShipData);
+			}
+		}
+
 		default:
 		break;
 	}
