@@ -10,9 +10,11 @@ import {WebsocketService} from './_services/websocket.service';
 export class AppComponent {
   title = 'BattleShip';
 
+  userLogged;
   constructor(private authService: AuthService,
-    private socket: WebsocketService) {}
-
+    public socket: WebsocketService) {}
+  
+  
   isLoggedIn() {
     return this.authService.currentUserValue;
   }

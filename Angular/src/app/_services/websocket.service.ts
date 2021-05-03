@@ -2,6 +2,7 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import {webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import {AuthService} from './auth';
+import {Router} from '@angular/router';
 
 const MESSAGE_TYPE = {
     Disconnect:-1,
@@ -17,12 +18,14 @@ Object.freeze(MESSAGE_TYPE);
 @Injectable()
 export class WebsocketService{
 
-    private username: string;
-    private opponent: string = null;
+    public username: string;
+    public opponent: string = null;
 
     socket: WebSocketSubject<any>;
     
-    constructor(private authService: AuthService) {
+    constructor(private authService: AuthService,
+    private router : Router
+        ) {
     }
 
     connect() {
@@ -75,7 +78,7 @@ export class WebsocketService{
         this.socket.next(message);
     }
 
-    send(data: string, type = MESSAGE_TYPE.Misc) {
+    send(data, type = MESSAGE_TYPE.Misc) {
         this.socket.next({
             username: this.username,
             opponent: this.opponent,
@@ -103,12 +106,16 @@ export class WebsocketService{
             case MESSAGE_TYPE.OpponentFound: {
                 this.opponent = msg.message;
                 console.log('Game Started vs ', this.opponent);
-                this.sendChat('Hello Breh!');
+                this.router.navigate(['game']);
             }
 
             case MESSAGE_TYPE.SearchOpponent: {
                 console.log(msg.message);
                 break;
+            }
+
+            case MESSAGE_TYPE.ShipData: {
+                console.log("shipData: " + msg.message);
             }
 
             default: {
