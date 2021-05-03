@@ -44,7 +44,7 @@ export class AuthService {
   }
 
   public get httpHeader() {
-    return this.httpOptions;
+    return {  Authorization: 'Bearer ' + this.currentUserValue.token  };
   }
 
   login(username: string, password: string): Observable<any> {
