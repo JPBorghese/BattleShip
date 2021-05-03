@@ -24,6 +24,7 @@ export class GameComponent implements OnInit {
   user: User;
   cpu: User;
   leftTurn: boolean;
+  hitAudio = new Audio('hit.mp3');
   constructor(private notif: NotificationService,
     private socket: WebsocketService,
     private auth: AuthService
@@ -32,8 +33,13 @@ export class GameComponent implements OnInit {
 
   ngOnInit() {
     this.showChat = false;
+    this.user = {
+      username: "Guest",
+    }
     this.auth.currentUser.subscribe((user) => {
-      this.user = user;
+      if (user) {
+        this.user = user;
+      }
     })
     this.leftBoard = {
       username: this.user.username,
@@ -66,6 +72,11 @@ export class GameComponent implements OnInit {
       return this.leftTurn == (false) ? color : noBorder;
     }
 
+  }
+
+  play() {
+    var audio = new Audio('hit.mp3');
+    audio.play();
   }
 
   initCPU() {
@@ -321,22 +332,13 @@ export class GameComponent implements OnInit {
 
   fire(coord: number, otherBoard: Board) {
     if (otherBoard.tiles[coord].ship) {
+      this.hitAudio.play();
       this.notif.showNotif("hit!", "Ok");
     } else {
       this.notif.showNotif("miss!", "Ok");
     }
     otherBoard.tiles[coord].isBombed = true;
   }
-
-  // cpufire(otherboard: Board) {
-  //   let coord = Math.floor(Math.random() * 99);
-  //   if (otherboard.tiles[coord].ship) {
-  //     this.notif.showNotif("hit!", "Ok");
-  //   } else {
-  //     this.notif.showNotif("miss!", "Ok");
-  //   }
-  //   otherboard.tiles[coord].isBombed = true;
-  // }
 
   updateCPU() {
     function cpufire(otherboard: Board, notif: NotificationService, turn: boolean) {

@@ -56,7 +56,7 @@ import { StatsComponent } from './stats/stats.component';
     MatSnackBarModule, 
     MatIconModule, 
     MatDividerModule, 
-    MatSelectModule, 
+    MatSelectModule,
     MatDialogModule
 
   ],

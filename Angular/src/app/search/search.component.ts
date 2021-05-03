@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'search-component',
@@ -7,13 +8,18 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 })
 export class SearchComponent implements OnInit {
 
-  constructor() { }
-  test = "";
+  constructor(public dialog: MatDialog) { }
   ngOnInit(): void {
     
   }
 
-  cpu() {
-    
+  searching() {
+    this.dialog.open(searchingDialog);
   }
 }
+
+@Component({
+  selector: 'searching-dialog',
+  templateUrl: 'searching-dialog.html',
+})
+export class searchingDialog {}
