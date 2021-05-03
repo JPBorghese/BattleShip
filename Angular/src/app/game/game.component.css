@@ -20,7 +20,6 @@
 
 .leftBoard {
   grid-area: leftBoard;
-  display: flex;
 }
 
 .rightBoard {

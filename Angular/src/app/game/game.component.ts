@@ -22,7 +22,7 @@ export class GameComponent implements OnInit {
   showChat: Boolean;
   state: GameState;
   user: User;
-  cpu: boolean;
+  cpu: User;
   leftTurn: boolean;
   constructor(private notif: NotificationService,
     private socket: WebsocketService,
@@ -32,10 +32,11 @@ export class GameComponent implements OnInit {
 
   ngOnInit() {
     this.showChat = false;
-
-    this.leftTurn = (Math.floor(Math.random() * 2) == 0) ? true : false;
+    this.auth.currentUser.subscribe((user) => {
+      this.user = user;
+    })
     this.leftBoard = {
-      username: "",
+      username: this.user.username,
       state: GameState.placeCourier,
       tiles: this.initTiles(),
       ships: this.initShips()
@@ -48,8 +49,9 @@ export class GameComponent implements OnInit {
       ships: this.initShips()
     }
 
-    // this.hardCodeShips(this.leftBoard);
-    this.initCPU();
+    this.hardCodeShips(this.leftBoard);
+    // this.hardCodeShips(this.rightBoard);
+    this.rightBoard = this.initCPU();
     this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
   }
 
@@ -58,33 +60,23 @@ export class GameComponent implements OnInit {
     let res = "";
     //console.log(this.leftTurn);
     if (board === this.leftBoard) {
-      res = this.leftTurn == (true) ? color : "";
+      return this.leftTurn == (true) ? color : noBorder;
     } else {
-      res = this.leftTurn == (false) ? color : "";
+      return this.leftTurn == (false) ? color : noBorder;
     }
 
-    return res + "; " + "box-sizing: border-box";
   }
+
   initCPU() {
-    this.user = {
-      username: "CPU",
-    }
-    this.rightBoard = {
+    let board = {
       username: "CPU",
       state: GameState.placeCourier,
       tiles: this.initTiles(),
       ships: this.initShips()
     }
 
-    this.hardCodeShips(this.rightBoard);
-    this.auth.currentUser.subscribe((user) => {
-      if (user) {
-        this.user = user;
-        this.leftBoard.username = user.username;
-      } else {
-        this.leftBoard.username = "Guest";
-      }
-    })
+    this.hardCodeShips(board);
+    return board;
   }
 
   hardCodeShips(board: Board) {
@@ -121,13 +113,16 @@ export class GameComponent implements OnInit {
       }
     }
 
-    board.tiles[40].ship = {
-      name: "Destroyer",
-      holes: 1,
-      pos: [40],
+    if (board.username === "CPU") {
+      board.tiles[40].ship = {
+        name: "Submarine",
+        holes: 1,
+        pos: [40],
+      }
+      board.state = GameState.waitForOpponent;
+    } else {
+      board.state = GameState.placeDestroyer;
     }
-
-    board.state = GameState.fireRocket;
   }
 
   initTiles(): Tile[] {
@@ -170,8 +165,18 @@ export class GameComponent implements OnInit {
     return ships;
   }
 
+  isBoardTurn(board: Board) {
+    return (board === this.leftBoard && this.leftTurn) || (board === this.rightBoard && !this.leftTurn);
+  }
+
   disableButtons(board: Board) {
-    return board.state === GameState.fireRocket && board.username === this.user.username;
+    if(board.state === GameState.fireRocket && board.username === this.user.username) {
+      return true;
+    }
+
+    if (board.state === GameState.fireRocket && this.isBoardTurn(board)) {
+      return true;
+    }
   }
 
   shipColor(ship: Ship, board: Board): String {
@@ -251,11 +256,14 @@ export class GameComponent implements OnInit {
   }
 
   placingShips(board): boolean {
-    return board.state === GameState.placeCourier ||
-      board.state === GameState.placeBattleship ||
-      board.state === GameState.placeCruiser ||
-      board.state === GameState.placeSub ||
-      board.state === GameState.placeDestroyer;
+    if (board.username === this.user.username) {
+      return board.state === GameState.placeCourier ||
+        board.state === GameState.placeBattleship ||
+        board.state === GameState.placeCruiser ||
+        board.state === GameState.placeSub ||
+        board.state === GameState.placeDestroyer;
+    }
+    return false;
   }
 
   nextState(state): GameState {
@@ -319,6 +327,37 @@ export class GameComponent implements OnInit {
     otherBoard.tiles[coord].isBombed = true;
   }
 
+  // cpufire(otherboard: Board) {
+  //   let coord = Math.floor(Math.random() * 99);
+  //   if (otherboard.tiles[coord].ship) {
+  //     this.notif.showNotif("hit!", "Ok");
+  //   } else {
+  //     this.notif.showNotif("miss!", "Ok");
+  //   }
+  //   otherboard.tiles[coord].isBombed = true;
+  // }
+
+  updateCPU() {
+    function cpufire(otherboard: Board, notif: NotificationService, turn: boolean) {
+      let coord = Math.floor(Math.random() * 99);
+      if (otherboard.tiles[coord].ship) {
+        notif.showNotif("hit!", "Ok");
+      } else {
+        notif.showNotif("miss!", "Ok");
+      }
+      otherboard.tiles[coord].isBombed = true;
+      return (turn) ? false : true;
+      
+    }
+
+    if (!this.leftTurn && this.rightBoard.username === "CPU") {
+      setTimeout(() => { this.leftTurn = cpufire(this.leftBoard, this.notif, this.leftTurn) }, 1000);
+    } else if (this.leftTurn && this.leftBoard.username === "CPU") {
+      setTimeout(() => { this.leftTurn = cpufire(this.rightBoard, this.notif, this.leftTurn) }, 1000);
+    }
+  }
+
+
 
   update(coord: number, board: Board, otherBoard: Board) {
     let shipsPlaced: Tile[];
@@ -380,18 +419,18 @@ export class GameComponent implements OnInit {
         if (this.leftBoard.state === GameState.waitForOpponent && this.rightBoard.state === GameState.waitForOpponent) {
           this.leftBoard.state = GameState.fireRocket;
           this.rightBoard.state = GameState.fireRocket;
+          this.leftTurn = (Math.floor(Math.random() * 2) == 0) ? true : false;
           this.notif.showNotif("Game Started!", "Ok");
         }
+
+        this.updateCPU();
         break;
       }
 
       case GameState.fireRocket: {
-        if (this.leftTurn) {
-          this.leftTurn = false;
-        } else {
-          this.leftTurn = true;
-        }
+        this.leftTurn = (this.leftTurn) ? false : true;
         this.fire(coord, board);
+        this.updateCPU();
         break;
       }
     }
