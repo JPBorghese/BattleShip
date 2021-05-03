@@ -11,28 +11,20 @@ var clients = [];
 
 // define types enum
 const MESSAGE_TYPE = {
+	Disconnect:-1,
 	Misc:0,
 	Chat:1,
 	Move:2,
-	OpponentFound:3
+	OpponentFound:3,
+	SearchOpponent:4,
+	ShipData:5
 }
 Object.freeze(MESSAGE_TYPE);
 
 function onConnect(ws) {
-	console.log(ws._protocol, " connected");
-
-	clients.push(ws);
-
-	// search for opponent
-	let opponent = gameService.searchForOpponent(ws._protocol);
-
-	// if you found someone to play againt
-	if (opponent) {
-		console.log('Game starting: ', ws._protocol, ' vs. ', opponent);
-		sendMsg(ws, opponent, MESSAGE_TYPE.OpponentFound);
-		sendMsg(findSocket(opponent), ws._protocol, MESSAGE_TYPE.OpponentFound);
-	} else {
-		sendMsg(ws, 'Searching for opponent', MESSAGE_TYPE.Misc);
+	if (!findSocket(ws._protocol)) {
+		clients.push(ws);
+		console.log(ws._protocol, " connected");
 	}
 }
 
@@ -47,8 +39,19 @@ function onMessage(message) {
 	const msg = JSON.parse(message);
 
 	switch (msg.type) {
+		case MESSAGE_TYPE.Disconnect: {
+			removeSocket();
+			break;
+		}
+
 		case MESSAGE_TYPE.Chat: {
+			//console.log('Message sent: ', msg.opponent, ' ', msg.message);
 			sendMsg(findSocket(msg.opponent), msg.message, MESSAGE_TYPE.Chat);
+			break;
+		}
+
+		case MESSAGE_TYPE.SearchOpponent: {
+			searchForOpponent(msg.username);
 			break;
 		}
 
@@ -70,4 +73,38 @@ function findSocket(username) {
 	}
 
 	return null;
+}
+
+function removeSocket(username) {
+	let c = null;
+	
+	for (let i = 0; i < clients.length; i++) {
+		if (clients[i]._protocol === username) {
+			c = clients[i];
+			clients.splice(i, 1);
+			break;
+		}
+	}
+
+	if (!c) {
+		console.log(c._protocol, " Disconnected");
+		c.close();
+	}
+}
+
+function searchForOpponent(username) {
+	let ws = findSocket(username);
+
+	// search for opponent
+	let opponent = gameService.searchForOpponent(username);
+
+	// if you found someone to play againt
+	if (opponent) {
+		console.log('Game starting: ', ws._protocol, ' vs. ', opponent);
+		sendMsg(ws, opponent, MESSAGE_TYPE.OpponentFound);
+		sendMsg(findSocket(opponent), ws._protocol, MESSAGE_TYPE.OpponentFound);
+	} else {
+		console.log(username, ' searching for opponent');
+		sendMsg(ws, 'Searching for opponent', MESSAGE_TYPE.SearchOpponent);
+	}
 }

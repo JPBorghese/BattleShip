@@ -4,7 +4,6 @@ import { Tile } from '../_models/tile';
 import { GameState } from '../_models/gamestate';
 import { NotificationService } from '../_services/notification.service';
 
-import { WebsocketService } from '../_services/websocket.service';
 import { AuthService } from '../_services/auth';
 import { Board } from '../_models/board';
 import { User } from '../_models/user';
@@ -26,7 +25,6 @@ export class GameComponent implements OnInit {
   leftTurn: boolean;
   hitAudio = new Audio('hit.mp3');
   constructor(private notif: NotificationService,
-    private socket: WebsocketService,
     private auth: AuthService
   ) { }
 
@@ -439,9 +437,5 @@ export class GameComponent implements OnInit {
         break;
       }
     }
-  }
-
-  send(msg) {
-    this.socket.send('HI');
   }
 }

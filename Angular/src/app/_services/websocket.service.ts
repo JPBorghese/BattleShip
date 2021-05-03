@@ -4,34 +4,49 @@ import {webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import {AuthService} from './auth';
 
 const MESSAGE_TYPE = {
+    Disconnect:-1,
     Misc:0,
     Chat:1,
     Move:2,
-    OpponentFound:3
+    OpponentFound:3,
+    SearchOpponent:4,
+    ShipData:5
 }
 Object.freeze(MESSAGE_TYPE);
 
 @Injectable()
 export class WebsocketService{
 
-    private username: string = (this.authService.currentUserValue) ? this.authService.currentUserValue.username : 'Guest';
+    private username: string;
     private opponent: string = null;
 
-    socket: WebSocketSubject<any> = webSocket({
+    socket: WebSocketSubject<any>;
+    
+    constructor(private authService: AuthService) {
+    }
+
+    connect() {
+        this.username = this.authService.currentUserValue.username;
+
+        this.socket = webSocket({
             url:'ws://localhost:8080',
             //deserializer: msg => msg, 
             protocol: this.username
         });
-    
-    constructor(private authService: AuthService) {
+
         this.socket.subscribe(
             msg => this.msgReceived(msg),
             err => console.log(err)
         );
     }
 
-    ngOnDestroy() {
+    disconnect() {
+        this.send("", MESSAGE_TYPE.Disconnect);
         this.socket.unsubscribe();
+    }
+
+    ngOnDestroy() {
+        console.log('destroy called');
     }
 
     sendChat(msg) {
@@ -49,6 +64,15 @@ export class WebsocketService{
 
             this.socket.next(message);
         }
+    }
+
+    searchForOpponent() {
+        const message = {
+            username: this.username,
+            type: MESSAGE_TYPE.SearchOpponent
+        }
+
+        this.socket.next(message);
     }
 
     send(data: string, type = MESSAGE_TYPE.Misc) {
@@ -82,13 +106,14 @@ export class WebsocketService{
                 this.sendChat('Hello Breh!');
             }
 
+            case MESSAGE_TYPE.SearchOpponent: {
+                console.log(msg.message);
+                break;
+            }
+
             default: {
                 break;
             }
         }
-    }
-
-    close() {
-        this.socket.unsubscribe();
     }
 }

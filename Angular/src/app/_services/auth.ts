@@ -15,9 +15,6 @@ export class AuthService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<any>;  // changed from Observable<User>
 
-
-  private httpOptions;
-
   constructor(private http: HttpClient,
     private notifService: NotificationService,
     private router: Router) {
@@ -25,17 +22,6 @@ export class AuthService {
 
     // currentUser is turned into an Observable that will allow other parts of the app to subscribe and get notified when currentUserSubject changes.
     this.currentUser = this.currentUserSubject.asObservable();
-
-    if (this.currentUserSubject.value) {
-      this.httpOptions = {
-        Authorization: 'Bearer ' + this.currentUserSubject.value.token
-      };
-    } else {
-      this.httpOptions = {
-        Authorization: ''
-      };
-    }
-
   }
 
 
