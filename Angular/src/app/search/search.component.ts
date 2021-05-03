@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import {AppComponent} from '../app.component';
 
 @Component({
   selector: 'search-component',
@@ -7,7 +8,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 })
 export class SearchComponent implements OnInit {
 
-  constructor() { }
+  constructor(private appComponent: AppComponent) { }
   test = "";
   ngOnInit(): void {
     
@@ -15,5 +16,10 @@ export class SearchComponent implements OnInit {
 
   cpu() {
     
+  }
+
+  search() {
+    this.appComponent.connectSocket();
+    this.appComponent.searchOpponent();
   }
 }
