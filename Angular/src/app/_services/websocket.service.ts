@@ -20,7 +20,7 @@ export class WebsocketService{
 
     public username: string;
     public opponent: string = null;
-
+    
     socket: WebSocketSubject<any>;
     
     constructor(private authService: AuthService,
