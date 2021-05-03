@@ -40,7 +40,7 @@ export class AuthService {
         // login successful if there's a jwt token in the response
         if (user && user.token) {
 
-          localStorage.setItem('currentUser', JSON.stringify(user));
+          //localStorage.setItem('currentUser', JSON.stringify(user));
           this.currentUserSubject.next(user);
         }
 
@@ -53,7 +53,7 @@ export class AuthService {
 
   logout() {
     // remove user from local storage to log user out
-    localStorage.removeItem('currentUser');
+    //localStorage.removeItem('currentUser');
 
     if (this.currentUserSubject.value) {
       this.notifService.showNotif(`Logged out`, "(:");

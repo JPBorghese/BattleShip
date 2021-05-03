@@ -88,6 +88,8 @@ export class WebsocketService{
     }
 
     msgReceived(msg) {
+        console.log('Message recieved ', msg);
+
         switch (msg.type) {
             case MESSAGE_TYPE.Misc: {
                 console.log(msg.message);
@@ -110,12 +112,15 @@ export class WebsocketService{
             }
 
             case MESSAGE_TYPE.SearchOpponent: {
-                console.log(msg.message);
+                //console.log(msg.message);
                 break;
             }
 
             case MESSAGE_TYPE.ShipData: {
-                console.log("shipData: " + msg.message);
+                // msg.message is the username of the person who goes first
+                // should be either username or opponent
+                console.log(msg.message);
+                break;
             }
 
             default: {
