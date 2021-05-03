@@ -7,6 +7,7 @@ import { NotificationService } from '../_services/notification.service';
 import { AuthService } from '../_services/auth';
 import { Board } from '../_models/board';
 import { User } from '../_models/user';
+import {AppComponent} from '../app.component';
 
 @Component({
   selector: 'app-game',
@@ -21,11 +22,13 @@ export class GameComponent implements OnInit {
   showChat: Boolean;
   state: GameState;
   user: User;
+  opp: User;
   cpu: User;
   leftTurn: boolean;
   hitAudio = new Audio('hit.mp3');
   constructor(private notif: NotificationService,
-    private auth: AuthService
+    private auth: AuthService,
+    private app: AppComponent
   ) { }
 
 
@@ -34,11 +37,13 @@ export class GameComponent implements OnInit {
     this.user = {
       username: "Guest",
     }
+
     this.auth.currentUser.subscribe((user) => {
       if (user) {
         this.user = user;
       }
     })
+
     this.leftBoard = {
       username: this.user.username,
       state: GameState.placeCourier,
@@ -47,15 +52,15 @@ export class GameComponent implements OnInit {
     }
 
     this.rightBoard = {
-      username: "",
+      username: this.app.socket.opponent,
       state: GameState.placeCourier,
       tiles: this.initTiles(),
       ships: this.initShips()
     }
 
-    this.hardCodeShips(this.leftBoard);
+    // this.hardCodeShips(this.leftBoard);
     // this.hardCodeShips(this.rightBoard);
-    this.rightBoard = this.initCPU();
+    // this.rightBoard = this.initCPU();
     this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
   }
 
@@ -94,7 +99,6 @@ export class GameComponent implements OnInit {
     for (let i = 0; i < 5; i++) {
       board.tiles[i].ship = {
         name: "Courier",
-        holes: 5,
         pos: [0, 1, 2, 3, 4],
       }
     }
@@ -102,7 +106,6 @@ export class GameComponent implements OnInit {
     for (let i = 10; i < 14; i++) {
       board.tiles[i].ship = {
         name: "Battleship",
-        holes: 4,
         pos: [10, 11, 12, 13],
       }
     }
@@ -110,7 +113,6 @@ export class GameComponent implements OnInit {
     for (let i = 20; i < 23; i++) {
       board.tiles[i].ship = {
         name: "Cruiser",
-        holes: 3,
         pos: [20, 21, 22],
       }
     }
@@ -118,7 +120,6 @@ export class GameComponent implements OnInit {
     for (let i = 30; i < 32; i++) {
       board.tiles[i].ship = {
         name: "Submarine",
-        holes: 2,
         pos: [30, 31],
       }
     }
@@ -126,7 +127,6 @@ export class GameComponent implements OnInit {
     if (board.username === "CPU") {
       board.tiles[40].ship = {
         name: "Submarine",
-        holes: 1,
         pos: [40],
       }
       board.state = GameState.waitForOpponent;
@@ -180,7 +180,7 @@ export class GameComponent implements OnInit {
   }
 
   disableButtons(board: Board) {
-    if(board.state === GameState.fireRocket && board.username === this.user.username) {
+    if (board.state === GameState.fireRocket && board.username === this.user.username) {
       return true;
     }
 
@@ -348,7 +348,7 @@ export class GameComponent implements OnInit {
       }
       otherboard.tiles[coord].isBombed = true;
       return (turn) ? false : true;
-      
+
     }
 
     if (!this.leftTurn && this.rightBoard.username === "CPU") {
@@ -372,7 +372,7 @@ export class GameComponent implements OnInit {
           }
         })
 
-        this.placeShip(board.ships[0], board.ships[0].holes, shipsPlaced, coord, board);
+        this.placeShip(board.ships[0], 5, shipsPlaced, coord, board);
         break;
       }
 
@@ -383,7 +383,7 @@ export class GameComponent implements OnInit {
           }
         })
 
-        this.placeShip(board.ships[1], board.ships[1].holes, shipsPlaced, coord, board);
+        this.placeShip(board.ships[1], 4, shipsPlaced, coord, board);
         break;
       }
 
@@ -394,7 +394,7 @@ export class GameComponent implements OnInit {
           }
         })
 
-        this.placeShip(board.ships[2], board.ships[2].holes, shipsPlaced, coord, board);
+        this.placeShip(board.ships[2], 3, shipsPlaced, coord, board);
         break;
       }
 
@@ -405,7 +405,7 @@ export class GameComponent implements OnInit {
           }
         })
 
-        this.placeShip(board.ships[3], board.ships[3].holes, shipsPlaced, coord, board);
+        this.placeShip(board.ships[3], 2, shipsPlaced, coord, board);
         break;
       }
 
@@ -416,8 +416,18 @@ export class GameComponent implements OnInit {
           }
         })
 
-        this.placeShip(board.ships[4], board.ships[4].holes, shipsPlaced, coord, board);
-        if (this.leftBoard.state === GameState.waitForOpponent && this.rightBoard.state === GameState.waitForOpponent) {
+        this.placeShip(board.ships[4], 1, shipsPlaced, coord, board);        
+
+        if (this.leftBoard.state === GameState.waitForOpponent) {
+          let ships = {
+            Courier: this.leftBoard.ships[0].pos, 
+            Battleship: this.leftBoard.ships[1].pos, 
+            Cruiser: this.leftBoard.ships[2].pos, 
+            Submarine: this.leftBoard.ships[3].pos, 
+            Destroyer: this.leftBoard.ships[4].pos, 
+          }
+
+          this.app.socket.send(ships, 5);
           this.leftBoard.state = GameState.fireRocket;
           this.rightBoard.state = GameState.fireRocket;
           this.leftTurn = (Math.floor(Math.random() * 2) == 0) ? true : false;

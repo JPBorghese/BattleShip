@@ -58,7 +58,6 @@ import { StatsComponent } from './stats/stats.component';
     MatDividerModule, 
     MatSelectModule,
     MatDialogModule
-
   ],
   providers: [WebsocketService],
   bootstrap: [AppComponent]
