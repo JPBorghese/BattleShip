@@ -56,7 +56,7 @@ export class GameComponent implements OnInit {
   turnIndicator(board: Board) {
     let color = "border: 4px solid green";
     let res = "";
-    console.log(this.leftTurn);
+    //console.log(this.leftTurn);
     if (board === this.leftBoard) {
       res = this.leftTurn == (true) ? color : "";
     } else {

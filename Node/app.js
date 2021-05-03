@@ -32,13 +32,11 @@ const WebSocket = require('ws');
 const webservice = require('./services/websocket.service')
 const wss = new WebSocket.Server({port: 8080});
 
-var clients = [];
 
 wss.on('connection', ws => {
-  clients.push(ws);
+	webservice.onConnect(ws);
+
   ws.on('message', msg => webservice.onMessage(msg));
   ws.on('error', err => webservice.onError(err));
-  ws.send(`Hello! Message from Server!!`);
+  //ws.send(`Hello! Message from Server!!`);
 });
-
-exports.clients = clients;
