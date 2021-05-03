@@ -31,7 +31,8 @@ function initGame(msg) {
 	console.log(msg);
 	let game = findGame(msg.username);
 
-	if (!game) {
+	if (game === null) {
+		console.log('Game created ', msg.username, ' vs. ', msg.opponent);
 		const newGame = {
 			p1: msg.username,
 			p2: msg.opponent,
@@ -42,7 +43,7 @@ function initGame(msg) {
 		games.push(newGame);
 		return null;
 	} else {
-		if (game.p1 === username) {
+		if (game.p1 === msg.username) {
 			p1boats = msg.message;
 		} else {
 			p2boats = msg.message;

@@ -58,8 +58,9 @@ function onMessage(message) {
 		case MESSAGE_TYPE.ShipData: {
 			let first = gameService.initGame(msg);
 
-			if (!first) {
-				sendMsg(findSocket(msg.username), first + 'goes first!', MESSAGE_TYPE.ShipData);
+			if (first) {
+				sendMsg(findSocket(msg.username), first, MESSAGE_TYPE.ShipData);
+				sendMsg(findSocket(msg.opponent), first, MESSAGE_TYPE.ShipData);
 			}
 		}
 
