@@ -36,11 +36,13 @@ export class GameComponent implements OnInit {
     this.user = {
       username: "Guest",
     }
+
     this.auth.currentUser.subscribe((user) => {
       if (user) {
         this.user = user;
       }
     })
+
     this.leftBoard = {
       username: this.user.username,
       state: GameState.placeCourier,
