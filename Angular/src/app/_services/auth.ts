@@ -1,12 +1,12 @@
-import {Router} from '@angular/router';
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {User} from '../_models/user';
-import {HttpClient} from '@angular/common/http';
-import {HttpHeaders} from '@angular/common/http';
+import { Router } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { User } from '../_models/user';
+import { HttpClient } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
-import {NotificationService} from './notification.service';
+import { NotificationService } from './notification.service';
 
 
 @Injectable({ providedIn: 'root' })
@@ -19,16 +19,23 @@ export class AuthService {
   private httpOptions;
 
   constructor(private http: HttpClient,
-      private notifService: NotificationService,
-      private router: Router) {
+    private notifService: NotificationService,
+    private router: Router) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
 
     // currentUser is turned into an Observable that will allow other parts of the app to subscribe and get notified when currentUserSubject changes.
     this.currentUser = this.currentUserSubject.asObservable();
 
-    this.httpOptions = {
+    if (this.currentUserSubject.value) {
+      this.httpOptions = {
         Authorization: 'Bearer ' + this.currentUserSubject.value.token
-    };
+      };
+    } else {
+      this.httpOptions = {
+        Authorization: ''
+      };
+    }
+
   }
 
 
@@ -46,7 +53,7 @@ export class AuthService {
       .pipe(map(user => {
         // login successful if there's a jwt token in the response
         if (user && user.token) {
-          
+
           localStorage.setItem('currentUser', JSON.stringify(user));
           this.currentUserSubject.next(user);
         }
@@ -54,7 +61,7 @@ export class AuthService {
         this.notifService.showNotif(`Logged in as ${user.username}`, "(:");
 
         return user;
-    }));
+      }));
   }
 
 
