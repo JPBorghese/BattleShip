@@ -7,7 +7,7 @@ import { NotificationService } from '../_services/notification.service';
 import { AuthService } from '../_services/auth';
 import { Board } from '../_models/board';
 import { User } from '../_models/user';
-import {AppComponent} from '../app.component';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-game',
@@ -56,11 +56,11 @@ export class GameComponent implements OnInit {
       ships: this.initShips()
     }
 
-    if(!this.rightBoard.username) {
+    if (!this.rightBoard.username) {
       this.rightBoard.username = "CPU";
     }
 
-    // this.hardCodeShips(this.leftBoard);
+    this.hardCodeShips(this.leftBoard);
     // this.hardCodeShips(this.rightBoard);
     // this.rightBoard = this.initCPU();
     this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
@@ -73,12 +73,11 @@ export class GameComponent implements OnInit {
   turnIndicator(board: Board) {
     let color = "border: 4px solid green";
     let noBorder = "border: 4px solid white";
-    let res = "";
     //console.log(this.leftTurn);
     if (board === this.leftBoard) {
-      return this.leftTurn == (true) ? color : noBorder;
+      return this.app.socket.userTurn == (true) ? color : noBorder;
     } else {
-      return this.leftTurn == (false) ? color : noBorder;
+      return this.app.socket.userTurn == (false) ? color : noBorder;
     }
 
   }
@@ -192,10 +191,6 @@ export class GameComponent implements OnInit {
 
   disableButtons(board: Board) {
     if (board.state === GameState.fireRocket && board.username === this.user.username) {
-      return true;
-    }
-
-    if (board.state === GameState.fireRocket && this.isBoardTurn(board)) {
       return true;
     }
   }
@@ -344,7 +339,7 @@ export class GameComponent implements OnInit {
     if (otherBoard.tiles[coord].ship) {
       // this.hitAudio.play();
       this.notif.showNotif("hit!", "Ok");
-      otherBoard.ships.findIndex( (ship) => {
+      otherBoard.ships.findIndex((ship) => {
         ship.name === shipRef.name
       })
     } else {
@@ -426,27 +421,31 @@ export class GameComponent implements OnInit {
           }
         })
 
-        this.placeShip(board.ships[4], 1, shipsPlaced, coord, board);        
-        if (this.leftBoard.state === GameState.waitForOpponent && this.rightBoard.state === GameState.waitForOpponent) {
+        this.placeShip(board.ships[4], 1, shipsPlaced, coord, board);
+        if (this.leftBoard.state === GameState.waitForOpponent) {
           if (!this.vsCPU()) {
             let ships = {
               Courier: this.leftBoard.ships[0].pos,
               Battleship: this.leftBoard.ships[1].pos,
               Cruiser: this.leftBoard.ships[2].pos,
-              Submarine: this.leftBoard.ships[3].pos, 
+              Submarine: this.leftBoard.ships[3].pos,
               Destroyer: this.leftBoard.ships[4].pos,
             }
-  
+
             this.app.socket.send(ships, 5);
+            this.leftBoard.state = GameState.fireRocket;
+            this.rightBoard.state = GameState.fireRocket;
+            // setTimeout( () => {
+            //   this.checkOpp();
+            // }, 30000);            
           } else {
             this.leftBoard.state = GameState.fireRocket;
             this.rightBoard.state = GameState.fireRocket;
             this.leftTurn = (Math.floor(Math.random() * 2) == 0) ? true : false;
             this.notif.showNotif("Game Started!", "Ok");
+            this.updateCPU();
           }
         }
-
-        this.updateCPU();
         break;
       }
 
@@ -456,7 +455,13 @@ export class GameComponent implements OnInit {
           this.fire(coord, board);
           this.updateCPU();
         } else {
-          
+          console.log(this.app.socket.userTurn);
+          if (this.app.socket.userTurn) {
+            let move = {
+              coord: coord,
+            }
+            this.app.socket.send(move, 2);
+          }
         }
         break;
       }
@@ -464,6 +469,15 @@ export class GameComponent implements OnInit {
       case GameState.gameOver: {
         break;
       }
+    }
+  }
+
+  checkOpp() {
+    if (this.app.socket.userTurn !== null) {
+      this.leftBoard.state = GameState.fireRocket;
+      this.rightBoard.state = GameState.fireRocket;
+      let turn = (this.app.socket.userTurn) ? this.app.socket.username : this.app.socket.opponent;
+      this.notif.showNotif("Game Started," + turn + "'s " + "turn!", "Ok");
     }
   }
 }
