@@ -5,7 +5,6 @@
     <mat-grid-tile *ngFor="let tile of leftBoard.tiles;" (click)="!disableButtons(leftBoard) && update(tile.coord, leftBoard, rightBoard)"
       [style.background]="shipColor(tile.ship, leftBoard)" [disabled]="disableButtons(leftBoard)">
       <mat-icon *ngIf="tile.isBombed && tile.ship;">hit</mat-icon>
-      <mat-icon *ngIf="tile.isBombed && !tile.ship;">radio_button_unchecked</mat-icon>
       <div *ngIf="!tile.isBombed">{{tile.coord}}</div>
     </mat-grid-tile>
   </mat-grid-list>
@@ -59,3 +58,5 @@
     <mat-divider></mat-divider>
   </mat-card>
 </div>
+
+<button (click)="play();">hit</button>
