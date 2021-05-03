@@ -42,7 +42,7 @@ async function makeGame() {
 	});
 }
 
-async function printGames() {
+function printGames() {
 	for (let i = 0; i < games.length; i++) {
 		console.log(games[i]);
 	}

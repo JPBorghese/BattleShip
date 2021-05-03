@@ -25,10 +25,6 @@ export class AuthService {
 
     // currentUser is turned into an Observable that will allow other parts of the app to subscribe and get notified when currentUserSubject changes.
     this.currentUser = this.currentUserSubject.asObservable();
-
-    this.httpOptions = {
-        Authorization: 'Bearer ' + this.currentUserSubject.value.token
-    };
   }
 
 
@@ -37,7 +33,7 @@ export class AuthService {
   }
 
   public get httpHeader() {
-    return this.httpOptions;
+    return {  Authorization: 'Bearer ' + this.currentUserValue.token  };
   }
 
   login(username: string, password: string): Observable<any> {
