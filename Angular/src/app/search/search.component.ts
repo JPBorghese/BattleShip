@@ -23,7 +23,6 @@ export class SearchComponent implements OnInit {
   }
 
   close() {
-
   }
 }
 

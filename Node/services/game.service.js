@@ -57,6 +57,7 @@ function initGame(msg) {
 }
 
 function shot(username, coord) {
+	
 	let game = findGame(username);
 
 	if (!game) {
@@ -107,12 +108,7 @@ function shot(username, coord) {
 	let gameover = ((ships.Courier.length + ships.Battleship.length + ships.Cruiser.length + ships.Submarine.length + ships.Destroyer.length) === 0);
 
 
-	return { 
-		coord: coord,
-		hit: hit,
-		shipSunk: shipSunk,
-		gameover: gameover
-	}
+	return coord;
 }
 
 function findGame(username) {

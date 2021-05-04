@@ -8,6 +8,7 @@ import { AuthService } from '../_services/auth';
 import { Board } from '../_models/board';
 import { User } from '../_models/user';
 import { AppComponent } from '../app.component';
+import { WebsocketService } from '../_services/websocket.service';
 
 @Component({
   selector: 'app-game',
@@ -17,8 +18,8 @@ import { AppComponent } from '../app.component';
 
 export class GameComponent implements OnInit {
 
-  leftBoard: Board;
-  rightBoard: Board;
+  public leftBoard: Board;
+  public rightBoard: Board;
   showChat: Boolean;
   state: GameState;
   user: User;
@@ -29,7 +30,9 @@ export class GameComponent implements OnInit {
   ) { }
 
 
+
   ngOnInit() {
+    this.app.socket.update.subscribe(msg => this.msgReceived(msg));
     this.showChat = false;
     this.user = {
       username: "Guest",
@@ -63,6 +66,17 @@ export class GameComponent implements OnInit {
 
     this.hardCodeShips(this.leftBoard);
     this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
+  }
+
+  msgReceived(msg) {
+    if (msg.type === 2) {
+      console.log(msg);
+      console.log("Opponent Moved");
+      console.log(this.app.socket.userTurn);
+      this.fire(msg.message, this.leftBoard);
+      console.log(this.app.socket.userTurn);
+      this.checkWinner();
+    }
   }
 
   vsCPU() {
@@ -499,7 +513,77 @@ export class GameComponent implements OnInit {
     }, 100);
   }
 
+  updateOpp() {
 
+    if (this.app.socket.userTurn) {
+      return;
+    }
+
+
+    function oppfire(otherBoard: Board, notif: NotificationService, socket: WebsocketService) {
+
+      let coord = socket.oppMove;
+      console.log(otherBoard.username + ": " + JSON.stringify(otherBoard));
+      console.log(coord);
+      if (otherBoard.tiles[coord].ship) {
+        // this.hitAudio.play();
+        let shipRef = otherBoard.tiles[coord].ship;
+        notif.showNotif("hit!", "Ok");
+        let shipIndex = otherBoard.ships.findIndex(x => x.name === shipRef.name);
+        let posIndex = otherBoard.ships[shipIndex].pos.findIndex(x => x === coord);
+        otherBoard.ships[shipIndex].pos.splice(posIndex, 1);
+      } else {
+        notif.showNotif("miss!", "Ok");
+      }
+      otherBoard.tiles[coord].isBombed = true;
+      this.app.socket.userTurn = (this.app.socket.userTurn) ? false : true;
+    }
+
+    setTimeout(() => {
+      oppfire(this.leftBoard, this.notif, this.app.socket);
+      this.app.socket.userTurn = true;
+    }, 100);
+  }
+
+  placeOppShips(board: Board, oppBoats) {
+    for (let i = 0; i < 5; i++) {
+      board.tiles[oppBoats.Courier[i]].ship = {
+        name: "Courier",
+        pos: oppBoats.Courier,
+      }
+      board.ships[0].pos.push(i);
+    }
+
+    for (let i = 0; i < 4; i++) {
+      board.tiles[oppBoats.Battleship[i]].ship = {
+        name: "Battleship",
+        pos: oppBoats.BattleShip,
+      }
+      board.ships[1].pos.push(i);
+    }
+
+    for (let i = 0; i < 3; i++) {
+      board.tiles[oppBoats.Cruiser[i]].ship = {
+        name: "Cruiser",
+        pos: oppBoats.Cruiser,
+      }
+      board.ships[2].pos.push(i);
+    }
+
+    for (let i = 0; i < 2; i++) {
+      board.tiles[oppBoats.Submarine[i]].ship = {
+        name: "Submarine",
+        pos: oppBoats.Submarine,
+      }
+      board.ships[3].pos.push(i);
+    }
+
+    board.tiles[oppBoats.Destroyer[0]].ship = {
+      name: "Destroyer",
+      pos: oppBoats.Destroyer,
+    }
+    board.ships[4].pos.push(oppBoats.Destroyer[0]);
+  }
 
   update(coord: number, board: Board, otherBoard: Board) {
     let shipsPlaced: Tile[];
@@ -570,7 +654,18 @@ export class GameComponent implements OnInit {
 
             this.app.socket.send(ships, 5);
             this.leftBoard.state = GameState.fireRocket;
-            this.rightBoard.state = GameState.fireRocket;
+            function checkDone(opp, rightBoard, placeOppShips) {
+              if (opp != null) {
+                console.log("opp: " + opp.username + ", " + opp.boats);
+                placeOppShips(rightBoard, opp.boats);
+                rightBoard.state = GameState.fireRocket;
+                clearInterval(poll);
+              }
+            }
+
+            var poll = setInterval(() => {
+              checkDone(this.app.socket.opp, this.rightBoard, this.placeOppShips);
+            }, 1000);
 
           } else {
             this.leftBoard.state = GameState.fireRocket;
@@ -587,34 +682,20 @@ export class GameComponent implements OnInit {
       case GameState.fireRocket: {
         if (this.vsCPU()) {
           this.fire(coord, board);
+          this.checkWinner();
           this.updateCPU();
-
           this.checkWinner();
         } else {
-          if (this.app.socket.userTurn) {
-            let move = {
-              coord: coord,
-            }
-            this.app.socket.send(move, 2);
-            this.fire(coord, board);
-
-            function checkMove(oppMoved) {
-              if (oppMoved != null) {
-                console.log(oppMoved);
-                clearInterval(poll);
-                oppMoved = null;
-              }
-            }
-
-            var poll = setInterval(() => {
-              checkMove(this.app.socket.oppMove);
-            })
-            this.checkWinner();
-
+          let move = {
+            coord: coord,
           }
-          break;
+          this.app.socket.send(move, 2);
+          this.fire(coord, board);
+          this.checkWinner();
         }
+        break;
       }
+
 
       case GameState.gameOver: {
         break;
