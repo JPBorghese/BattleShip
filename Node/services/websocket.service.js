@@ -21,10 +21,9 @@ const MESSAGE_TYPE = {
 Object.freeze(MESSAGE_TYPE);
 
 function onConnect(ws) {
-	if (!findSocket(ws._protocol)) {
-		clients.push(ws);
-		console.log(ws._protocol, " connected");
-	}
+	removeSocket(ws._protocol);
+	clients.push(ws);
+	console.log(ws._protocol, " connected");
 }
 
 function sendMsg(ws, message, type = MESSAGE_TYPE.Misc) {
@@ -95,8 +94,9 @@ function findSocket(username) {
 
 function removeSocket(username) {
 	let c = null;
+	let i;
 	
-	for (let i = 0; i < clients.length; i++) {
+	for (i = 0; i < clients.length; i++) {
 		if (clients[i]._protocol === username) {
 			c = clients[i];
 			clients.splice(i, 1);
@@ -104,7 +104,7 @@ function removeSocket(username) {
 		}
 	}
 
-	if (!c) {
+	if (c) {
 		console.log(c._protocol, " Disconnected");
 		c.close();
 	}
