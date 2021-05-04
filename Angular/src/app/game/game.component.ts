@@ -112,12 +112,77 @@ export class GameComponent implements OnInit {
       }
     }
 
-    let chosenCourier = possibleCourier[Math.floor(Math.random() * possibleCourier.length)];
     function findSameIndex(arr1, arr2) {
       return arr1.some(item => arr2.includes(item))
     }
-    let chosenBattleship 
 
+    let chosen = [];
+    let chosenCourier = possibleCourier[Math.floor(Math.random() * possibleCourier.length)];
+    chosen.push(chosenCourier);
+
+    let chosenBattleship = possibleBattleship.filter((arr) => {
+      return !findSameIndex(arr, chosen);
+    });
+    chosenBattleship = chosenBattleship[Math.floor(Math.random() * chosenBattleship.length)];
+    chosen.push(chosenBattleship);
+
+    let chosenCruiser = possibleCruiser.filter((arr) => {
+      return !findSameIndex(arr, chosen);
+    });
+    chosenCruiser = chosenCruiser[Math.floor(Math.random() * chosenCruiser.length)];
+    chosen.push(chosenCruiser);
+
+    let chosenSubmarine = possibleSubmarine.filter((arr) => {
+      return !findSameIndex(arr, chosen);
+    });
+    chosenSubmarine = chosenSubmarine[Math.floor(Math.random() * chosenSubmarine.length)];
+    chosen.push(chosenSubmarine);
+
+    let chosenDestroyer = possibleDestroyer.filter((arr) => {
+      return !findSameIndex(arr, chosen);
+    });
+    chosenDestroyer = chosenDestroyer[Math.floor(Math.random() * chosenDestroyer.length)];
+    chosen.push(chosenDestroyer);
+
+    for (let pos of chosenCourier) {
+      board.tiles[pos].ship = {
+        name: "Courier",
+        pos: chosenCourier,
+      }
+      board.ships[0].pos.push(pos);
+    }
+
+    for (let pos of chosenBattleship) {
+      board.tiles[pos].ship = {
+        name: "Battleship",
+        pos: chosenBattleship,
+      }
+      board.ships[1].pos.push(pos);
+    }
+
+    for (let pos of chosenCruiser) {
+      board.tiles[pos].ship = {
+        name: "Cruiser",
+        pos: chosenCruiser,
+      }
+      board.ships[2].pos.push(pos);
+    }
+
+    for (let pos of chosenSubmarine) {
+      board.tiles[pos].ship = {
+        name: "Submarine",
+        pos: chosenSubmarine,
+      }
+      board.ships[3].pos.push(pos);
+    }
+
+    board.tiles[chosenDestroyer[0]].ship = {
+      name: "Destroyer",
+      pos: chosenDestroyer,
+    }
+    board.ships[4].pos.push(chosenDestroyer[0]);
+
+    board.state = GameState.waitForOpponent;
   }
 
   turnIndicator(board: Board) {
@@ -415,13 +480,13 @@ export class GameComponent implements OnInit {
 
     function cpufire(otherBoard: Board, notif: NotificationService) {
       let coord = Math.floor(Math.random() * 100);
-      let shipRef = otherBoard.tiles[coord].ship;
       if (otherBoard.tiles[coord].ship) {
         // this.hitAudio.play();
+        let shipRef = otherBoard.tiles[coord].ship;
         notif.showNotif("hit!", "Ok");
-        let board = otherBoard.ships.findIndex((ship) => {
-          ship.name === shipRef.name
-        })
+        let shipIndex = otherBoard.ships.findIndex(x => x.name === shipRef.name);
+        let posIndex = otherBoard.ships[shipIndex].pos.findIndex(x => x === coord);
+        otherBoard.ships[shipIndex].pos.splice(posIndex, 1);
       } else {
         notif.showNotif("miss!", "Ok");
       }
@@ -532,6 +597,7 @@ export class GameComponent implements OnInit {
             }
             this.app.socket.send(move, 2);
             this.fire(coord, board);
+            this.checkWinner();
           }
         }
         break;
@@ -549,7 +615,7 @@ export class GameComponent implements OnInit {
       leftLength += ship.pos.length;
     }
     if (leftLength === 0) {
-      console.log(this.app.socket.opponent + " wins!")
+      this.notif.showNotif(this.app.socket.opponent + " wins!")
       this.leftBoard.state = GameState.gameOver;
       this.rightBoard.state = GameState.gameOver;
     }
@@ -559,7 +625,7 @@ export class GameComponent implements OnInit {
       rightLength += ship.pos.length;
     }
     if (rightLength === 0) {
-      console.log(this.app.socket.username + " wins!")
+      this.notif.showNotif(this.app.socket.username + " wins!")
       this.leftBoard.state = GameState.gameOver;
       this.rightBoard.state = GameState.gameOver;
     }
