@@ -50,10 +50,7 @@ function initGame(msg) {
 			game.p2boats = msg.message;
 		}
 
-		
-		console.log(game);
-
-		return game.p1;
+		return game;
 	}
 }
 
