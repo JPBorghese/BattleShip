@@ -13,7 +13,8 @@ const MESSAGE_TYPE = {
     Chat: 1,
     Move: 2,
     SearchOpponent: 4,
-    ShipData: 5
+    ShipData: 5, 
+    gameOver: 6
 }
 Object.freeze(MESSAGE_TYPE);
 

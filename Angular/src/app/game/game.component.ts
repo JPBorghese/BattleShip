@@ -8,7 +8,6 @@ import { AuthService } from '../_services/auth';
 import { Board } from '../_models/board';
 import { User } from '../_models/user';
 import { AppComponent } from '../app.component';
-import { WebsocketService } from '../_services/websocket.service';
 
 @Component({
   selector: 'app-game',
@@ -25,6 +24,7 @@ export class GameComponent implements OnInit {
   showChat: Boolean;
   state: GameState;
   user: User;
+  
   // hitAudio = new Audio('hit.mp3');
   constructor(private notif: NotificationService,
     private auth: AuthService,
@@ -72,12 +72,8 @@ export class GameComponent implements OnInit {
 
   msgReceived(msg) {
     if (msg.type === 2) {
-      console.log(msg);
-      console.log("Opponent Moved");
-      console.log(this.app.socket.userTurn);
       this.fire(msg.message, this.leftBoard);
-      console.log(this.app.socket.userTurn);
-      this.checkWinner();
+      this.app.socket.userTurn = true;
     }
   }
 
@@ -513,39 +509,7 @@ export class GameComponent implements OnInit {
       cpufire(this.leftBoard, this.notif);
       this.app.socket.userTurn = true;
     }, 100);
-  }
-
-  updateOpp() {
-
-    if (this.app.socket.userTurn) {
-      return;
-    }
-
-
-    function oppfire(otherBoard: Board, notif: NotificationService, socket: WebsocketService) {
-
-      let coord = socket.oppMove;
-      console.log(otherBoard.username + ": " + JSON.stringify(otherBoard));
-      console.log(coord);
-      if (otherBoard.tiles[coord].ship) {
-        // this.hitAudio.play();
-        let shipRef = otherBoard.tiles[coord].ship;
-        notif.showNotif("hit!", "Ok");
-        let shipIndex = otherBoard.ships.findIndex(x => x.name === shipRef.name);
-        let posIndex = otherBoard.ships[shipIndex].pos.findIndex(x => x === coord);
-        otherBoard.ships[shipIndex].pos.splice(posIndex, 1);
-      } else {
-        notif.showNotif("miss!", "Ok");
-      }
-      otherBoard.tiles[coord].isBombed = true;
-      this.app.socket.userTurn = (this.app.socket.userTurn) ? false : true;
-    }
-
-    setTimeout(() => {
-      oppfire(this.leftBoard, this.notif, this.app.socket);
-      this.app.socket.userTurn = true;
-    }, 100);
-  }
+  } 
 
   placeOppShips(board: Board, oppBoats) {
     for (let i = 0; i < 5; i++) {
@@ -706,6 +670,7 @@ export class GameComponent implements OnInit {
   }
 
   checkWinner() {
+
     let leftLength = 0;
     for (let ship of this.leftBoard.ships) {
       leftLength += ship.pos.length;
@@ -724,6 +689,10 @@ export class GameComponent implements OnInit {
       this.notif.showNotif(this.app.socket.username + " wins!")
       this.leftBoard.state = GameState.gameOver;
       this.rightBoard.state = GameState.gameOver;
+      let winner = {
+        username: this.app.socket.username,
+      }
+      this.app.socket.send(winner, 6);
     }
   }
 }
