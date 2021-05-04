@@ -15,7 +15,6 @@ const MESSAGE_TYPE = {
 	Misc:0,
 	Chat:1,
 	Move:2,
-	OpponentFound:3,
 	SearchOpponent:4,
 	ShipData:5
 }
@@ -64,6 +63,13 @@ function onMessage(message) {
 			}
 		}
 
+		case MESSAGE_TYPE.Move: {
+			let ret = gameService.shot(msg.username, msg.coord);
+			sendMsg(findSocket(msg.username), ret, MESSAGE_TYPE.Move);
+			sendMsg(findSocket(msg.opponent), ret, MESSAGE_TYPE.Move);
+			break;
+		}
+
 		default:
 		break;
 	}
@@ -110,10 +116,9 @@ function searchForOpponent(username) {
 	// if you found someone to play againt
 	if (opponent) {
 		console.log('Game starting: ', ws._protocol, ' vs. ', opponent);
-		sendMsg(ws, opponent, MESSAGE_TYPE.OpponentFound);
-		sendMsg(findSocket(opponent), ws._protocol, MESSAGE_TYPE.OpponentFound);
+		sendMsg(ws, opponent, MESSAGE_TYPE.SearchOpponent);
+		sendMsg(findSocket(opponent), ws._protocol, MESSAGE_TYPE.SearchOpponent);
 	} else {
 		console.log(username, ' searching for opponent');
-		sendMsg(ws, 'Searching for opponent', MESSAGE_TYPE.SearchOpponent);
 	}
 }
