@@ -4,6 +4,7 @@ import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { AuthService } from './auth';
 import { Router } from '@angular/router';
 import { NotificationService } from '../_services/notification.service';
+import { Subject } from 'rxjs';
 
 const MESSAGE_TYPE = {
     Disconnect:-1,
@@ -21,6 +22,7 @@ export class WebsocketService {
     public username: string;
     public opponent: string = null;
     public userTurn: boolean = true;
+    public chat: string[];
 
     socket: WebSocketSubject<any>;
 
@@ -31,6 +33,7 @@ export class WebsocketService {
     }
 
     connect() {
+        this.chat = [];
         this.username = this.authService.currentUserValue.username;
 
         this.socket = webSocket({
@@ -58,14 +61,15 @@ export class WebsocketService {
         if (!this.opponent) {
             console.log("No opponent to message!");
         } else {
+
+            this.chat.push(this.username + ': ' + msg);
+
             const message = {
                 username: this.username,
                 opponent: this.opponent,
                 type: MESSAGE_TYPE.Chat,
                 message: msg
             };
-
-            console.log('sent: ', message);
 
             this.socket.next(message);
         }
@@ -100,7 +104,7 @@ export class WebsocketService {
             }
 
             case MESSAGE_TYPE.Chat: {
-                console.log(this.opponent, ': ', msg.message);
+                this.chat.push(this.opponent + ': ' + msg.message + '\n');
                 break;
             }
 

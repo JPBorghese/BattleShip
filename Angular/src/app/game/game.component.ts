@@ -17,6 +17,8 @@ import { AppComponent } from '../app.component';
 
 export class GameComponent implements OnInit {
 
+  chatMessage: string;
+
   leftBoard: Board;
   rightBoard: Board;
   showChat: Boolean;

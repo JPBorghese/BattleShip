@@ -66,9 +66,13 @@ function onMessage(message) {
 
 		case MESSAGE_TYPE.Move: {
 			console.log('Move: ', msg);
+
+			//let ret = gameService.move(msg.username, )
+			/*
 			let ret = gameService.shot(msg.username, msg.coord);
 			sendMsg(findSocket(msg.username), ret, MESSAGE_TYPE.Move);
 			sendMsg(findSocket(msg.opponent), ret, MESSAGE_TYPE.Move);
+			*/
 			break;
 		}
 
