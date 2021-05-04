@@ -58,12 +58,15 @@ function onMessage(message) {
 			let first = gameService.initGame(msg);
 
 			if (first) {
+				console.log('Game Starting');
 				sendMsg(findSocket(msg.username), first, MESSAGE_TYPE.ShipData);
 				sendMsg(findSocket(msg.opponent), first, MESSAGE_TYPE.ShipData);
 			}
+			break;
 		}
 
 		case MESSAGE_TYPE.Move: {
+			console.log('Move: ', msg);
 			let ret = gameService.shot(msg.username, msg.coord);
 			sendMsg(findSocket(msg.username), ret, MESSAGE_TYPE.Move);
 			sendMsg(findSocket(msg.opponent), ret, MESSAGE_TYPE.Move);

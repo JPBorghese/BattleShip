@@ -29,7 +29,7 @@ let games = [];
 // returns null if other player has not sent info yet
 // returns username of player to go first
 function initGame(msg) {
-	console.log(msg);
+	console.log('init: ', msg);
 	let game = findGame(msg.username);
 
 	if (game === null) {
@@ -50,6 +50,7 @@ function initGame(msg) {
 			game.p2boats = msg.message;
 		}
 
+		
 		console.log(game);
 
 		return game.p1;
