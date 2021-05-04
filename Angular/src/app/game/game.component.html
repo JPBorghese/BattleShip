@@ -53,10 +53,14 @@
   <mat-icon class="chat-icon" (click)="showChat = true"> chat</mat-icon>
   <mat-card class="chat-box" *ngIf="showChat">
     <mat-card-title>Chat</mat-card-title>
-    <mat-icon class="close" (click)="showChat = false">
-      close
-    </mat-icon>
+    <mat-icon class="close" (click)="showChat = false">close</mat-icon>
+    <mat-form-field appearance="legacy">
+      <mat-label>Message</mat-label>
+      <input matInput type="text" [(ngModel)]="chatMessage" placeholder="Hello">
+    </mat-form-field>
+    <button mat-button (click)="this.app.socket.sendChat(this.chatMessage)">Send</button>
     <mat-divider></mat-divider>
+    <mat-card-content *ngFor="let c of this.app.socket.chat"><li>{{c}}</li></mat-card-content>
   </mat-card>
 </div>
 

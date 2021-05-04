@@ -18,8 +18,10 @@ import { WebsocketService } from '../_services/websocket.service';
 
 export class GameComponent implements OnInit {
 
-  public leftBoard: Board;
-  public rightBoard: Board;
+  chatMessage: string;
+
+  leftBoard: Board;
+  rightBoard: Board;
   showChat: Boolean;
   state: GameState;
   user: User;

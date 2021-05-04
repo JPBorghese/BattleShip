@@ -73,3 +73,7 @@
   "leftShips leftBoard rightBoard rightShips"
   ". resetShipsLeft resetShipsRight. "
 }
+
+.chat {
+  font-size: 10px;
+}

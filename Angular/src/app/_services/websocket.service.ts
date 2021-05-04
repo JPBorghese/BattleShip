@@ -25,6 +25,7 @@ export class WebsocketService {
     public userTurn: boolean = true;
     public opp = null;
     public oppMove;
+    public chat: string[];
 
     socket: WebSocketSubject<any>;
     public update: Subject<any>;
@@ -39,6 +40,7 @@ export class WebsocketService {
     }
 
     connect() {
+        this.chat = [];
         this.username = this.authService.currentUserValue.username;
 
         this.socket = webSocket({
@@ -66,14 +68,15 @@ export class WebsocketService {
         if (!this.opponent) {
             console.log("No opponent to message!");
         } else {
+
+            this.chat.push(this.username + ': ' + msg);
+
             const message = {
                 username: this.username,
                 opponent: this.opponent,
                 type: MESSAGE_TYPE.Chat,
                 message: msg
             };
-
-            console.log('sent: ', message);
 
             this.socket.next(message);
         }
@@ -108,7 +111,7 @@ export class WebsocketService {
             }
 
             case MESSAGE_TYPE.Chat: {
-                console.log(this.opponent, ': ', msg.message);
+                this.chat.push(this.opponent + ': ' + msg.message + '\n');
                 break;
             }
 
