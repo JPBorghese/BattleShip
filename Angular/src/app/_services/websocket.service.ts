@@ -1,8 +1,9 @@
 
 import { Injectable, OnDestroy } from "@angular/core";
-import {webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import {AuthService} from './auth';
-import {Router} from '@angular/router';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { AuthService } from './auth';
+import { Router } from '@angular/router';
+import { NotificationService } from '../_services/notification.service';
 
 const MESSAGE_TYPE = {
     Disconnect:-1,
@@ -15,23 +16,25 @@ const MESSAGE_TYPE = {
 Object.freeze(MESSAGE_TYPE);
 
 @Injectable()
-export class WebsocketService{
+export class WebsocketService {
 
     public username: string;
     public opponent: string = null;
+    public userTurn: boolean = null;
 
     socket: WebSocketSubject<any>;
-    
+
     constructor(private authService: AuthService,
-    private router : Router
-        ) {
+        private router: Router, 
+        private notif: NotificationService
+    ) {
     }
 
     connect() {
         this.username = this.authService.currentUserValue.username;
 
         this.socket = webSocket({
-            url:'ws://localhost:8080',
+            url: 'ws://localhost:8080',
             //deserializer: msg => msg, 
             protocol: this.username
         });
@@ -81,7 +84,7 @@ export class WebsocketService{
         this.socket.next({
             username: this.username,
             opponent: this.opponent,
-            type:type,
+            type: type,
             message: data
         });
     }
@@ -116,7 +119,9 @@ export class WebsocketService{
             case MESSAGE_TYPE.ShipData: {
                 // msg.message is the username of the person who goes first
                 // should be either username or opponent
-
+                this.userTurn = (msg.message === this.username) ? true : false;
+                let turn = (this.userTurn) ? this.username : this.opponent;
+                this.notif.showNotif("Game Started," + turn + "'s " + "turn!", "Ok");
                 console.log(msg.message);
                 break;
             }
