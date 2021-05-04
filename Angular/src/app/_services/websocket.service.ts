@@ -4,14 +4,15 @@ import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { AuthService } from './auth';
 import { Router } from '@angular/router';
 import { NotificationService } from '../_services/notification.service';
+import { MatDialog } from '@angular/material/dialog';
 
 const MESSAGE_TYPE = {
-    Disconnect:-1,
-    Misc:0,
-    Chat:1,
-    Move:2,
-    SearchOpponent:4,
-    ShipData:5
+    Disconnect: -1,
+    Misc: 0,
+    Chat: 1,
+    Move: 2,
+    SearchOpponent: 4,
+    ShipData: 5
 }
 Object.freeze(MESSAGE_TYPE);
 
@@ -21,12 +22,14 @@ export class WebsocketService {
     public username: string;
     public opponent: string = null;
     public userTurn: boolean = true;
+    public oppMove = null;
 
     socket: WebSocketSubject<any>;
 
     constructor(private authService: AuthService,
-        private router: Router, 
-        private notif: NotificationService
+        private router: Router,
+        private notif: NotificationService,
+        private dialog: MatDialog
     ) {
     }
 
@@ -105,7 +108,13 @@ export class WebsocketService {
             }
 
             case MESSAGE_TYPE.Move: {
-                
+                // //msg.message = 
+                // coord: coord,
+                // hit: hit,
+                // shipSunk: shipSunk,
+                // gameover: gameover
+                console.log(msg.message);
+                this.oppMove = msg.message;
                 break;
             }
 
@@ -113,13 +122,14 @@ export class WebsocketService {
                 this.opponent = msg.message;
                 console.log('Game Started vs ', this.opponent);
                 this.router.navigate(['game']);
+                this.dialog.closeAll();
                 break;
             }
 
             case MESSAGE_TYPE.ShipData: {
                 // msg.message is the username of the person who goes first
                 // should be either username or opponent
-                this.userTurn = (msg.message === this.username) ? true : false;
+                this.userTurn = (msg.message.p1 === this.username) ? true : false;
                 let turn = (this.userTurn) ? this.username : this.opponent;
                 this.notif.showNotif("Game Started," + turn + "'s " + "turn!", "Ok");
                 console.log(msg.message);

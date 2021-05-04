@@ -597,10 +597,23 @@ export class GameComponent implements OnInit {
             }
             this.app.socket.send(move, 2);
             this.fire(coord, board);
+
+            function checkMove(oppMoved) {
+              if (oppMoved != null) {
+                console.log(oppMoved);
+                clearInterval(poll);
+                oppMoved = null;
+              }
+            }
+
+            var poll = setInterval(() => {
+              checkMove(this.app.socket.oppMove);
+            })
             this.checkWinner();
+
           }
+          break;
         }
-        break;
       }
 
       case GameState.gameOver: {

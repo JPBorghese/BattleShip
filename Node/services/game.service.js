@@ -50,10 +50,9 @@ function initGame(msg) {
 			game.p2boats = msg.message;
 		}
 
-		
 		console.log(game);
 
-		return game.p1;
+		return game;
 	}
 }
 
@@ -105,7 +104,7 @@ function shot(username, coord) {
 		}
 	}
 
-	let gameover = ((ships.Courier.length + ships.Battleship.length + ships.Cruiser.length + ships.Submarine.length + ships.Destroyer.length) == 0);
+	let gameover = ((ships.Courier.length + ships.Battleship.length + ships.Cruiser.length + ships.Submarine.length + ships.Destroyer.length) === 0);
 
 
 	return { 

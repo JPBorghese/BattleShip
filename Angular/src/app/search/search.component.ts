@@ -11,15 +11,19 @@ export class SearchComponent implements OnInit {
 
   constructor(private appComponent: AppComponent, 
     public dialog: MatDialog) { }
-
   ngOnInit(): void {
-    
   }
 
   searching() {
-    this.dialog.open(searchingDialog);
+    this.dialog.open(searchingDialog, {
+      closeOnNavigation: true
+    });
     this.appComponent.connectSocket();
     this.appComponent.searchOpponent();
+  }
+
+  close() {
+
   }
 }
 
