@@ -21,7 +21,7 @@ export class WebsocketService {
 
     public username: string;
     public opponent: string = null;
-    public userTurn: boolean = null;
+    public userTurn: boolean = true;
 
     socket: WebSocketSubject<any>;
 

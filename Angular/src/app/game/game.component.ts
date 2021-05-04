@@ -22,8 +22,7 @@ export class GameComponent implements OnInit {
   showChat: Boolean;
   state: GameState;
   user: User;
-  leftTurn: boolean;
-  hitAudio = new Audio('hit.mp3');
+  // hitAudio = new Audio('hit.mp3');
   constructor(private notif: NotificationService,
     private auth: AuthService,
     private app: AppComponent
@@ -57,12 +56,12 @@ export class GameComponent implements OnInit {
     }
 
     if (!this.rightBoard.username) {
-      this.rightBoard.username = "CPU";
+      this.rightBoard = this.initCPU();
+      this.app.socket.username = this.user.username;
+      this.app.socket.opponent = "CPU";
     }
 
     this.hardCodeShips(this.leftBoard);
-    // this.hardCodeShips(this.rightBoard);
-    // this.rightBoard = this.initCPU();
     this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
   }
 
@@ -70,16 +69,70 @@ export class GameComponent implements OnInit {
     return this.rightBoard.username === "CPU";
   }
 
+  randomlyPlaceShips(board) {
+
+    let possibleCourier = [];
+    let possibleBattleship = [];
+    let possibleCruiser = [];
+    let possibleSubmarine = [];
+    let possibleDestroyer = [];
+
+    for (let i = 0; i < 100; i++) {
+      //Horizontals
+      if (i % 10 <= 5) {
+        possibleCourier.push([i, i + 1, i + 2, i + 3, i + 4]);
+      }
+
+      if (i % 10 <= 6) {
+        possibleBattleship.push([i, i + 1, i + 2, i + 3]);
+      }
+
+      if (i % 10 <= 7) {
+        possibleCruiser.push([i, i + 1, i + 2]);
+      }
+
+      if (i % 10 <= 8) {
+        possibleSubmarine.push([i, i + 1]);
+      }
+
+      possibleDestroyer.push([i]);
+
+      //Verticals
+      if (i + 40 < 100) {
+        possibleCourier.push([i, i + 10, i + 20, i + 30, i + 40]);
+      }
+      if (i + 30 < 100) {
+        possibleBattleship.push([i, i + 10, i + 20, i + 30]);
+      }
+      if (i + 20 < 100) {
+        possibleCruiser.push([i, i + 10, i + 20]);
+      }
+      if (i + 10 < 100) {
+        possibleSubmarine.push([i, i + 10]);
+      }
+    }
+
+    let chosenCourier = possibleCourier[Math.floor(Math.random() * possibleCourier.length)];
+    function findSameIndex(arr1, arr2) {
+      return arr1.some(item => arr2.includes(item))
+    }
+    let chosenBattleship 
+
+  }
+
   turnIndicator(board: Board) {
     let color = "border: 4px solid green";
     let noBorder = "border: 4px solid white";
-    //console.log(this.leftTurn);
+
+    if (board.state !== GameState.fireRocket) {
+      return noBorder;
+    }
+
     if (board === this.leftBoard) {
       return this.app.socket.userTurn == (true) ? color : noBorder;
     } else {
       return this.app.socket.userTurn == (false) ? color : noBorder;
     }
-
   }
 
   play() {
@@ -95,7 +148,7 @@ export class GameComponent implements OnInit {
       ships: this.initShips()
     }
 
-    this.hardCodeShips(board);
+    this.randomlyPlaceShips(board);
     return board;
   }
 
@@ -135,10 +188,10 @@ export class GameComponent implements OnInit {
 
     if (board.username === "CPU") {
       board.tiles[40].ship = {
-        name: "Submarine",
+        name: "Destroyer",
         pos: [40],
       }
-      board.ships[0].pos.push(40);
+      board.ships[4].pos.push(40);
       board.state = GameState.waitForOpponent;
     } else {
       board.state = GameState.placeDestroyer;
@@ -167,18 +220,16 @@ export class GameComponent implements OnInit {
   private initShips(): Ship[] {
     let ships = [{
       name: "Courier",
-      holes: 5,
       pos: [],
     }];
 
     for (let i = 4; i >= 1; i--) {
       ships.push({
-        holes: i,
-        pos: [],
         ...(i === 4 && { name: "Battleship" }),
         ...(i === 3 && { name: "Cruiser" }),
         ...(i === 2 && { name: "Submarine" }),
         ...(i === 1 && { name: "Destroyer" }),
+        pos: [],
       });
     }
 
@@ -186,26 +237,28 @@ export class GameComponent implements OnInit {
   }
 
   isBoardTurn(board: Board) {
-    return (board === this.leftBoard && this.leftTurn) || (board === this.rightBoard && !this.leftTurn);
+    return (board === this.leftBoard && this.app.socket.userTurn) || (board === this.rightBoard && !this.app.socket.userTurn);
   }
 
   disableButtons(board: Board) {
     if (board.state === GameState.fireRocket && board.username === this.user.username) {
       return true;
     }
+
+    return (!this.app.socket.userTurn);
   }
 
-  shipColor(ship: Ship, board: Board): String {
-    if (ship && board.username === this.user.username) {
-      if (ship.name === "Courier") {
+  shipColor(tile: Tile, board: Board): String {
+    if ((tile.ship && board.username === this.user.username) || (tile.ship && tile.isBombed)) {
+      if (tile.ship.name === "Courier") {
         return "grey";
-      } else if (ship.name === "Destroyer") {
+      } else if (tile.ship.name === "Destroyer") {
         return "yellow";
-      } else if (ship.name === "Battleship") {
+      } else if (tile.ship.name === "Battleship") {
         return "purple";
-      } else if (ship.name === "Cruiser") {
+      } else if (tile.ship.name === "Cruiser") {
         return "orange";
-      } else if (ship.name === "Submarine") {
+      } else if (tile.ship.name === "Submarine") {
         return "brown";
       }
     }
@@ -335,32 +388,50 @@ export class GameComponent implements OnInit {
   }
 
   fire(coord: number, otherBoard: Board) {
-    let shipRef = otherBoard.tiles[coord].ship;
+
+    if (otherBoard.tiles[coord].isBombed) {
+      return;
+    }
+
     if (otherBoard.tiles[coord].ship) {
       // this.hitAudio.play();
+      let shipRef = otherBoard.tiles[coord].ship;
       this.notif.showNotif("hit!", "Ok");
-      otherBoard.ships.findIndex((ship) => {
-        ship.name === shipRef.name
-      })
+      let shipIndex = otherBoard.ships.findIndex(x => x.name === shipRef.name);
+      let posIndex = otherBoard.ships[shipIndex].pos.findIndex(x => x === coord);
+      otherBoard.ships[shipIndex].pos.splice(posIndex, 1);
     } else {
       this.notif.showNotif("miss!", "Ok");
     }
     otherBoard.tiles[coord].isBombed = true;
+    this.app.socket.userTurn = (this.app.socket.userTurn) ? false : true;
   }
 
   updateCPU() {
-    function cpufire(otherboard: Board, notif: NotificationService, turn: boolean) {
-      let coord = Math.floor(Math.random() * 99);
-      this.fire(coord, otherboard);
-      return (turn) ? false : true;
 
+    if (this.app.socket.userTurn) {
+      return;
     }
 
-    if (!this.leftTurn && this.rightBoard.username === "CPU") {
-      setTimeout(() => { this.leftTurn = cpufire(this.leftBoard, this.notif, this.leftTurn) }, 1000);
-    } else if (this.leftTurn && this.leftBoard.username === "CPU") {
-      setTimeout(() => { this.leftTurn = cpufire(this.rightBoard, this.notif, this.leftTurn) }, 1000);
+    function cpufire(otherBoard: Board, notif: NotificationService) {
+      let coord = Math.floor(Math.random() * 100);
+      let shipRef = otherBoard.tiles[coord].ship;
+      if (otherBoard.tiles[coord].ship) {
+        // this.hitAudio.play();
+        notif.showNotif("hit!", "Ok");
+        let board = otherBoard.ships.findIndex((ship) => {
+          ship.name === shipRef.name
+        })
+      } else {
+        notif.showNotif("miss!", "Ok");
+      }
+      otherBoard.tiles[coord].isBombed = true;
     }
+
+    setTimeout(() => {
+      cpufire(this.leftBoard, this.notif);
+      this.app.socket.userTurn = true;
+    }, 100);
   }
 
 
@@ -435,14 +506,13 @@ export class GameComponent implements OnInit {
             this.app.socket.send(ships, 5);
             this.leftBoard.state = GameState.fireRocket;
             this.rightBoard.state = GameState.fireRocket;
-            // setTimeout( () => {
-            //   this.checkOpp();
-            // }, 30000);            
+
           } else {
             this.leftBoard.state = GameState.fireRocket;
             this.rightBoard.state = GameState.fireRocket;
-            this.leftTurn = (Math.floor(Math.random() * 2) == 0) ? true : false;
-            this.notif.showNotif("Game Started!", "Ok");
+            this.app.socket.userTurn = (Math.floor(Math.random() * 2) == 0) ? true : false;
+            let turn = (this.app.socket.userTurn) ? this.leftBoard.username : this.rightBoard.username;
+            this.notif.showNotif("Game Started, " + turn + "'s " + "turn!", "Ok");
             this.updateCPU();
           }
         }
@@ -451,16 +521,17 @@ export class GameComponent implements OnInit {
 
       case GameState.fireRocket: {
         if (this.vsCPU()) {
-          this.leftTurn = (this.leftTurn) ? false : true;
           this.fire(coord, board);
           this.updateCPU();
+
+          this.checkWinner();
         } else {
-          console.log(this.app.socket.userTurn);
           if (this.app.socket.userTurn) {
             let move = {
               coord: coord,
             }
             this.app.socket.send(move, 2);
+            this.fire(coord, board);
           }
         }
         break;
@@ -472,12 +543,25 @@ export class GameComponent implements OnInit {
     }
   }
 
-  checkOpp() {
-    if (this.app.socket.userTurn !== null) {
-      this.leftBoard.state = GameState.fireRocket;
-      this.rightBoard.state = GameState.fireRocket;
-      let turn = (this.app.socket.userTurn) ? this.app.socket.username : this.app.socket.opponent;
-      this.notif.showNotif("Game Started," + turn + "'s " + "turn!", "Ok");
+  checkWinner() {
+    let leftLength = 0;
+    for (let ship of this.leftBoard.ships) {
+      leftLength += ship.pos.length;
+    }
+    if (leftLength === 0) {
+      console.log(this.app.socket.opponent + " wins!")
+      this.leftBoard.state = GameState.gameOver;
+      this.rightBoard.state = GameState.gameOver;
+    }
+
+    let rightLength = 0;
+    for (let ship of this.rightBoard.ships) {
+      rightLength += ship.pos.length;
+    }
+    if (rightLength === 0) {
+      console.log(this.app.socket.username + " wins!")
+      this.leftBoard.state = GameState.gameOver;
+      this.rightBoard.state = GameState.gameOver;
     }
   }
 }
