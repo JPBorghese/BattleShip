@@ -8,6 +8,7 @@ import { AuthService } from '../_services/auth';
 import { Board } from '../_models/board';
 import { User } from '../_models/user';
 import { AppComponent } from '../app.component';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-game',
@@ -24,11 +25,12 @@ export class GameComponent implements OnInit {
   showChat: Boolean;
   state: GameState;
   user: User;
-  
+
   // hitAudio = new Audio('hit.mp3');
   constructor(private notif: NotificationService,
     private auth: AuthService,
-    private app: AppComponent
+    private app: AppComponent,
+    private dialog: MatDialog
   ) { }
 
 
@@ -74,6 +76,7 @@ export class GameComponent implements OnInit {
     if (msg.type === 2) {
       this.fire(msg.message, this.leftBoard);
       this.app.socket.userTurn = true;
+      this.checkWinner();
     }
   }
 
@@ -509,7 +512,7 @@ export class GameComponent implements OnInit {
       cpufire(this.leftBoard, this.notif);
       this.app.socket.userTurn = true;
     }, 100);
-  } 
+  }
 
   placeOppShips(board: Board, oppBoats) {
     for (let i = 0; i < 5; i++) {
@@ -670,6 +673,7 @@ export class GameComponent implements OnInit {
   }
 
   checkWinner() {
+    const dialogConfig = new MatDialogConfig();
 
     let leftLength = 0;
     for (let ship of this.leftBoard.ships) {
@@ -679,6 +683,11 @@ export class GameComponent implements OnInit {
       this.notif.showNotif(this.app.socket.opponent + " wins!")
       this.leftBoard.state = GameState.gameOver;
       this.rightBoard.state = GameState.gameOver;
+      dialogConfig.data = {
+        winner: this.app.socket.opponent,
+      };
+      dialogConfig.closeOnNavigation = true;
+      this.dialog.open(gameOverDialog, dialogConfig);
     }
 
     let rightLength = 0;
@@ -693,6 +702,17 @@ export class GameComponent implements OnInit {
         username: this.app.socket.username,
       }
       this.app.socket.send(winner, 6);
+      dialogConfig.data = {
+        winner: this.app.socket.username,
+      };
+      dialogConfig.closeOnNavigation = true;
+      this.dialog.open(gameOverDialog, dialogConfig);
     }
   }
 }
+
+@Component({
+  selector: 'gameover-dialog',
+  templateUrl: 'gameover-dialog.html',
+})
+export class gameOverDialog { }

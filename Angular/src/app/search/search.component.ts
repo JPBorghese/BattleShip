@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import {AppComponent} from '../app.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'search-component',
@@ -20,9 +20,6 @@ export class SearchComponent implements OnInit {
     });
     this.appComponent.connectSocket();
     this.appComponent.searchOpponent();
-  }
-
-  close() {
   }
 }
 
