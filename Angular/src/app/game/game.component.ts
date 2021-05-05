@@ -272,7 +272,6 @@ export class GameComponent implements OnInit {
     }
 
     board.state = GameState.placeDestroyer;
-    //console.log(board.username + ": " + board.state);
   }
 
   initTiles(): Tile[] {
@@ -621,19 +620,6 @@ export class GameComponent implements OnInit {
             }
 
             this.app.socket.send(ships, 5);
-            // function checkDone(opp, rightBoard, placeOppShips) {
-            //   if (opp != null) {
-            //     console.log("opp: " + opp.username + ", " + opp.boats);
-            //     placeOppShips(rightBoard, opp.boats);
-            //     rightBoard.state = GameState.fireRocket;
-            //     clearInterval(poll);
-            //   }
-            // }
-
-            // var poll = setInterval(() => {
-            //   checkDone(this.app.socket.opp, this.rightBoard, this.placeOppShips);
-            // }, 1000);
-
           } else {
             this.leftBoard.state = GameState.fireRocket;
             this.rightBoard.state = GameState.fireRocket;
@@ -699,7 +685,7 @@ export class GameComponent implements OnInit {
       rightLength += ship.pos.length;
     }
     if (rightLength === 0) {
-      this.notif.showNotif(this.app.socket.username + " wins!", "ok");
+      this.notif.showNotif(this.app.socket.username + " Wins!", "ok");
       this.leftBoard.state = GameState.gameOver;
       this.rightBoard.state = GameState.gameOver;
       if (this.rightBoard.username !== "CPU") {

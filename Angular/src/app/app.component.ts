@@ -36,4 +36,8 @@ export class AppComponent {
   searchOpponent() {
     this.socket.searchForOpponent();
   }
+
+  stopSearch() {
+    this.socket.stopSearch();
+  }
 }
