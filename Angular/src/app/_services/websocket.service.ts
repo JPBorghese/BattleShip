@@ -1,5 +1,5 @@
 
-import { Injectable, OnDestroy } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { AuthService } from './auth';
 import { Router } from '@angular/router';
@@ -14,7 +14,8 @@ const MESSAGE_TYPE = {
     Move: 2,
     SearchOpponent: 4,
     ShipData: 5, 
-    gameOver: 6
+    gameOver: 6,
+    StopSearch: 7
 }
 Object.freeze(MESSAGE_TYPE);
 
@@ -22,7 +23,7 @@ Object.freeze(MESSAGE_TYPE);
 export class WebsocketService {
 
     public username: string;
-    public opponent: string = null;
+    public opponent: string;
     public userTurn: boolean;
     public opp = null;
     public oppMove;
@@ -43,8 +44,14 @@ export class WebsocketService {
     connect() {
         this.chat = [];
         this.username = this.authService.currentUserValue.username;
+<<<<<<< HEAD
         this.userTurn = true;
         
+=======
+        this.userTurn = true
+        this.opponent = null;
+
+>>>>>>> 4d40146520aa10a23b8663fdd2e6a074767dce06
         this.socket = webSocket({
             url: 'ws://localhost:8080',
             //deserializer: msg => msg, 
@@ -57,13 +64,18 @@ export class WebsocketService {
         );
     }
 
-    disconnect() {
-        this.send("", MESSAGE_TYPE.Disconnect);
-        this.socket.unsubscribe();
+    stopSearch() {
+        const message = {
+            username: this.username,
+            type: MESSAGE_TYPE.StopSearch
+        };
+        this.socket.next(message);
     }
 
-    ngOnDestroy() {
-        console.log('destroy called');
+    disconnect(err) {
+        console.log(err);
+        this.send("", MESSAGE_TYPE.Disconnect);
+        this.socket.unsubscribe();
     }
 
     sendChat(msg) {
@@ -103,7 +115,7 @@ export class WebsocketService {
     }
 
     msgReceived(msg) {
-        console.log('Message recieved ', msg);
+        //console.log('Message recieved ', msg);
 
         switch (msg.type) {
             case MESSAGE_TYPE.Misc: {

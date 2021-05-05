@@ -4,7 +4,8 @@ module.exports = {
     searchForOpponent,
 	initGame,
 	shot,
-	updateStats
+	updateStats,
+	removeSearch
 }
 
 // user searching for game
@@ -24,6 +25,14 @@ function searchForOpponent(username) {
 	}
 
 	return searching.pop();
+}
+
+function removeSearch(username) {
+	for (let i = 0; i < searching.length; i++) {
+		if (searching[i] === username) {
+			searching.splice(i, 1);
+		}
+	}
 }
 
 let games = [];
