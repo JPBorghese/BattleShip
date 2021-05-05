@@ -9,7 +9,8 @@ module.exports = {
     authenticate,
     addUser, 
     getStats,
-    getByUsername
+    getByUsername,
+    updateStats
 }
 
 async function getByUsername(username) {
@@ -67,4 +68,18 @@ async function getStats() {
         objs.push(obj);
     })
     return objs;
+}
+
+async function updateStats(username, didWin) {
+    let user = await User.findOne({username: username});
+
+    if (didWin) {
+        user.wins++;
+        user.score += 100;
+    } else {
+        user.loss++;
+        user.score -= 50;
+    }
+
+    await user.save();
 }

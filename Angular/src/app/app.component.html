@@ -1,8 +1,7 @@
-<mat-toolbar *ngIf="isLoggedIn()">
+<mat-toolbar *ngIf="true">
     <button mat-button routerLink="/">Home</button>
-    <button mat-button routerLink="/search">Play</button>
+    <button mat-button routerLink="/search" *ngIf="isLoggedIn()">Play</button>
     <button mat-button routerLink="/leaderboard">Leaderboard</button>
-    <button mat-button (click)="logout()">Logout</button>
 </mat-toolbar>
 
 <router-outlet></router-outlet>

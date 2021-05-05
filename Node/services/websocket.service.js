@@ -16,7 +16,8 @@ const MESSAGE_TYPE = {
 	Chat:1,
 	Move:2,
 	SearchOpponent:4,
-	ShipData:5
+	ShipData:5,
+	GameOver:6
 }
 Object.freeze(MESSAGE_TYPE);
 
@@ -32,7 +33,7 @@ function sendMsg(ws, message, type = MESSAGE_TYPE.Misc) {
 }
 
 function onMessage(message) {
-	console.log(`Message recieved: ${message}`);
+	//console.log(`Message recieved: ${message}`);
 
 	const msg = JSON.parse(message);
 
@@ -65,11 +66,21 @@ function onMessage(message) {
 		}
 
 		case MESSAGE_TYPE.Move: {
-			console.log('Move: ', msg);
-			// let ret = gameService.shot(msg.username, msg.coord);
-			// sendMsg(findSocket(msg.username), ret, MESSAGE_TYPE.Move);
+			//console.log('Move: ', msg);
 			sendMsg(findSocket(msg.opponent), msg.message.coord, MESSAGE_TYPE.Move);
 			break;
+		}
+
+		case MESSAGE_TYPE.GameOver: {
+			console.log('GameOver ', msg);
+
+			removeSocket(msg.username);
+			removeSocket(msg.opponent);
+
+			const p1Won = (msg.username === msg.message.winner);
+
+			gameService.updateStats(msg.username, p1Won);
+			gameService.updateStats(msg.opponent, !p1Won);
 		}
 
 		default:

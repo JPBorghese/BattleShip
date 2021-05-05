@@ -1,7 +1,7 @@
 <div class="text">BATTLESHIP 
     <div class="btn-group-vertical">
 
-        <button mat-button (click)="searching()">Search For Opponent</button>
+        <button mat-button (click)="searching()" *ngIf="this.appComponent.isLoggedIn()">Search For Opponent</button>
         <button mat-button routerLink="/game">Play Computer</button>
     </div>
 </div>
