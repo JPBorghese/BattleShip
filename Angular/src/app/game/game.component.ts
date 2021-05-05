@@ -77,7 +77,6 @@ export class GameComponent implements OnInit {
       this.app.socket.opponent = "CPU";
     }
 
-    // this.hardCodeShips(this.leftBoard);
     this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
   }
 
@@ -740,7 +739,7 @@ export class gameOverDialog {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private router: Router, 
-    private dialog: Dialog
+    private dialog: MatDialog
   ) { }
 
   home() {
