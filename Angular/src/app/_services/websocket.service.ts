@@ -37,7 +37,7 @@ export class WebsocketService {
         private dialog: MatDialog,
     ) {
         this.update = new Subject<any>();
-        this.opp = -1;
+        this.oppMove = -1;
     }
 
     connect() {
@@ -102,7 +102,6 @@ export class WebsocketService {
     }
 
     msgReceived(msg) {
-        this.update.next(msg);
         console.log('Message recieved ', msg);
 
         switch (msg.type) {
@@ -142,5 +141,6 @@ export class WebsocketService {
                 break;
             }
         }
+        this.update.next(msg);
     }
 }

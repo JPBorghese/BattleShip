@@ -8,7 +8,7 @@ import { AuthService } from '../_services/auth';
 import { Board } from '../_models/board';
 import { User } from '../_models/user';
 import { AppComponent } from '../app.component';
-import { MatDialog, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-game',
@@ -77,9 +77,11 @@ export class GameComponent implements OnInit {
       this.checkWinner();
     }
 
-    // if (msg.type === 5) {
-    //   this.update(0, this.leftBoard);
-    // }
+    if (msg.type === 5) {
+      this.placeOppShips(this.rightBoard, this.app.socket.opp.boats);
+      this.leftBoard.state = GameState.fireRocket;
+      this.rightBoard.state = GameState.fireRocket;
+    }
   }
 
   vsCPU() {
@@ -236,49 +238,41 @@ export class GameComponent implements OnInit {
   }
 
   hardCodeShips(board: Board) {
-    // //hard code locations for now
-    // for (let i = 0; i < 5; i++) {
-    //   board.tiles[i].ship = {
-    //     name: "Courier",
-    //     pos: [0, 1, 2, 3, 4],
-    //   }
-    //   board.ships[0].pos.push(i);
-    // }
-
-    // for (let i = 10; i < 14; i++) {
-    //   board.tiles[i].ship = {
-    //     name: "Battleship",
-    //     pos: [10, 11, 12, 13],
-    //   }
-    //   board.ships[1].pos.push(i);
-    // }
-
-    // for (let i = 20; i < 23; i++) {
-    //   board.tiles[i].ship = {
-    //     name: "Cruiser",
-    //     pos: [20, 21, 22],
-    //   }
-    //   board.ships[2].pos.push(i);
-    // }
-
-    // for (let i = 30; i < 32; i++) {
-    //   board.tiles[i].ship = {
-    //     name: "Submarine",
-    //     pos: [30, 31],
-    //   }
-    //   board.ships[3].pos.push(i);
-    // }
-
-    if (board.username === "CPU") {
-      board.tiles[40].ship = {
-        name: "Destroyer",
-        pos: [40],
+    //hard code locations for now
+    for (let i = 0; i < 5; i++) {
+      board.tiles[i].ship = {
+        name: "Courier",
+        pos: [0, 1, 2, 3, 4],
       }
-      board.ships[4].pos.push(40);
-      board.state = GameState.fireRocket;
-    } else {
-      board.state = GameState.placeDestroyer;
+      board.ships[0].pos.push(i);
     }
+
+    for (let i = 10; i < 14; i++) {
+      board.tiles[i].ship = {
+        name: "Battleship",
+        pos: [10, 11, 12, 13],
+      }
+      board.ships[1].pos.push(i);
+    }
+
+    for (let i = 20; i < 23; i++) {
+      board.tiles[i].ship = {
+        name: "Cruiser",
+        pos: [20, 21, 22],
+      }
+      board.ships[2].pos.push(i);
+    }
+
+    for (let i = 30; i < 32; i++) {
+      board.tiles[i].ship = {
+        name: "Submarine",
+        pos: [30, 31],
+      }
+      board.ships[3].pos.push(i);
+    }
+
+    board.state = GameState.placeDestroyer;
+    console.log(board.username + ": " + board.state);
   }
 
   initTiles(): Tile[] {
@@ -518,6 +512,8 @@ export class GameComponent implements OnInit {
   }
 
   placeOppShips(board: Board, oppBoats) {
+
+    console.log(oppBoats);
     for (let i = 0; i < 5; i++) {
       board.tiles[oppBoats.Courier[i]].ship = {
         name: "Courier",
@@ -625,19 +621,18 @@ export class GameComponent implements OnInit {
             }
 
             this.app.socket.send(ships, 5);
-            this.leftBoard.state = GameState.fireRocket;
-            function checkDone(opp, rightBoard, placeOppShips) {
-              if (opp != null) {
-                console.log("opp: " + opp.username + ", " + opp.boats);
-                placeOppShips(rightBoard, opp.boats);
-                rightBoard.state = GameState.fireRocket;
-                clearInterval(poll);
-              }
-            }
+            // function checkDone(opp, rightBoard, placeOppShips) {
+            //   if (opp != null) {
+            //     console.log("opp: " + opp.username + ", " + opp.boats);
+            //     placeOppShips(rightBoard, opp.boats);
+            //     rightBoard.state = GameState.fireRocket;
+            //     clearInterval(poll);
+            //   }
+            // }
 
-            var poll = setInterval(() => {
-              checkDone(this.app.socket.opp, this.rightBoard, this.placeOppShips);
-            }, 1000);
+            // var poll = setInterval(() => {
+            //   checkDone(this.app.socket.opp, this.rightBoard, this.placeOppShips);
+            // }, 1000);
 
           } else {
             this.leftBoard.state = GameState.fireRocket;
@@ -650,9 +645,6 @@ export class GameComponent implements OnInit {
         }
         break;
       }
-      // case GameState.waitForOpponent: {
-
-      // }
 
       case GameState.fireRocket: {
         if (this.vsCPU()) {
@@ -736,5 +728,5 @@ export class gameOverDialog {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any
-  ){}
+  ) { }
 }
