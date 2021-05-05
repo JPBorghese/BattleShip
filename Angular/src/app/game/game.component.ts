@@ -42,7 +42,7 @@ export class GameComponent implements OnInit {
     this.hitAudio = new Audio();
     this.missAudio.src = "../../assets/soundEffects/miss.wav";
     this.hitAudio.src = "../../assets/soundEffects/hit.mp3";
-    
+
     this.showChat = false;
     this.app.socket.userTurn = true;
     this.user = {
