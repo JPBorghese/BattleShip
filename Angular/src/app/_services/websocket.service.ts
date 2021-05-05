@@ -23,7 +23,7 @@ export class WebsocketService {
 
     public username: string;
     public opponent: string = null;
-    public userTurn: boolean = true;
+    public userTurn: boolean;
     public opp = null;
     public oppMove;
     public chat: string[];
@@ -43,7 +43,8 @@ export class WebsocketService {
     connect() {
         this.chat = [];
         this.username = this.authService.currentUserValue.username;
-
+        this.userTurn = true;
+        
         this.socket = webSocket({
             url: 'ws://localhost:8080',
             //deserializer: msg => msg, 

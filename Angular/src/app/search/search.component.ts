@@ -1,6 +1,6 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import {AppComponent} from '../app.component';
-import { MatDialog} from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'search-component',
@@ -15,6 +15,7 @@ export class SearchComponent implements OnInit {
   }
 
   searching() {
+    
     this.dialog.open(searchingDialog, {
       closeOnNavigation: true
     });
@@ -28,4 +29,9 @@ export class SearchComponent implements OnInit {
   templateUrl: 'searching-dialog.html',
 })
 export class searchingDialog {
+
+  constructor(@Inject(MAT_DIALOG_DATA) public app: AppComponent
+  ) {}
+  cancel() {
+  }
 }
