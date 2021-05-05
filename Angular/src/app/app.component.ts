@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {AuthService} from './_services/auth';
 import {WebsocketService} from './_services/websocket.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,8 @@ export class AppComponent {
 
   userLogged;
   constructor(private authService: AuthService,
-    public socket: WebsocketService) {}
+    public socket: WebsocketService,
+    private router: Router) {}
   
   
   isLoggedIn() {
@@ -21,6 +23,10 @@ export class AppComponent {
 
   logout() {
     this.authService.logout();
+  }
+
+  isInGame() {
+    return this.router.url === '/game';
   }
 
   connectSocket() {
