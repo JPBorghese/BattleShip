@@ -26,6 +26,9 @@ export class GameComponent implements OnInit {
   state: GameState;
   user: User;
 
+  missAudio;
+  hitAudio;
+
   // hitAudio = new Audio('hit.mp3');
   constructor(private notif: NotificationService,
     private auth: AuthService,
@@ -34,6 +37,11 @@ export class GameComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.missAudio = new Audio();
+    this.hitAudio = new Audio();
+    this.missAudio.src = "../../assets/soundEffects/miss.wav";
+    this.hitAudio.src = "../../assets/soundEffects/hit.mp3";
+
     this.app.socket.update.subscribe(msg => this.msgReceived(msg));
     this.showChat = false;
     this.user = {
@@ -470,13 +478,14 @@ export class GameComponent implements OnInit {
     }
 
     if (otherBoard.tiles[coord].ship) {
-      // this.hitAudio.play();
+      this.hitAudioPlay();
       let shipRef = otherBoard.tiles[coord].ship;
       this.notif.showNotif("hit!", "Ok");
       let shipIndex = otherBoard.ships.findIndex(x => x.name === shipRef.name);
       let posIndex = otherBoard.ships[shipIndex].pos.findIndex(x => x === coord);
       otherBoard.ships[shipIndex].pos.splice(posIndex, 1);
     } else {
+      this.missAudioPlay();
       this.notif.showNotif("miss!", "Ok");
     }
     otherBoard.tiles[coord].isBombed = true;
@@ -702,6 +711,17 @@ export class GameComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+
+  missAudioPlay() {
+    this.missAudio.load();
+    this.missAudio.play();
+  }
+
+  hitAudioPlay() {
+    this.hitAudio.load();
+    this.hitAudio.play();
   }
 }
 
