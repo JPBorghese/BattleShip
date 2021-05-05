@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Ship } from '../_models/ship';
 import { Tile } from '../_models/tile';
 import { GameState } from '../_models/gamestate';
@@ -8,7 +8,7 @@ import { AuthService } from '../_services/auth';
 import { Board } from '../_models/board';
 import { User } from '../_models/user';
 import { AppComponent } from '../app.component';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-game',
@@ -32,8 +32,6 @@ export class GameComponent implements OnInit {
     private app: AppComponent,
     private dialog: MatDialog
   ) { }
-
-
 
   ngOnInit() {
     this.app.socket.update.subscribe(msg => this.msgReceived(msg));
@@ -78,6 +76,10 @@ export class GameComponent implements OnInit {
       this.app.socket.userTurn = true;
       this.checkWinner();
     }
+
+    // if (msg.type === 5) {
+    //   this.update(0, this.leftBoard);
+    // }
   }
 
   vsCPU() {
@@ -228,43 +230,44 @@ export class GameComponent implements OnInit {
       ships: this.initShips()
     }
 
-    this.randomlyPlaceShips(board);
+    this.hardCodeShips(board);
+    // this.randomlyPlaceShips(board);
     return board;
   }
 
   hardCodeShips(board: Board) {
-    //hard code locations for now
-    for (let i = 0; i < 5; i++) {
-      board.tiles[i].ship = {
-        name: "Courier",
-        pos: [0, 1, 2, 3, 4],
-      }
-      board.ships[0].pos.push(i);
-    }
+    // //hard code locations for now
+    // for (let i = 0; i < 5; i++) {
+    //   board.tiles[i].ship = {
+    //     name: "Courier",
+    //     pos: [0, 1, 2, 3, 4],
+    //   }
+    //   board.ships[0].pos.push(i);
+    // }
 
-    for (let i = 10; i < 14; i++) {
-      board.tiles[i].ship = {
-        name: "Battleship",
-        pos: [10, 11, 12, 13],
-      }
-      board.ships[1].pos.push(i);
-    }
+    // for (let i = 10; i < 14; i++) {
+    //   board.tiles[i].ship = {
+    //     name: "Battleship",
+    //     pos: [10, 11, 12, 13],
+    //   }
+    //   board.ships[1].pos.push(i);
+    // }
 
-    for (let i = 20; i < 23; i++) {
-      board.tiles[i].ship = {
-        name: "Cruiser",
-        pos: [20, 21, 22],
-      }
-      board.ships[2].pos.push(i);
-    }
+    // for (let i = 20; i < 23; i++) {
+    //   board.tiles[i].ship = {
+    //     name: "Cruiser",
+    //     pos: [20, 21, 22],
+    //   }
+    //   board.ships[2].pos.push(i);
+    // }
 
-    for (let i = 30; i < 32; i++) {
-      board.tiles[i].ship = {
-        name: "Submarine",
-        pos: [30, 31],
-      }
-      board.ships[3].pos.push(i);
-    }
+    // for (let i = 30; i < 32; i++) {
+    //   board.tiles[i].ship = {
+    //     name: "Submarine",
+    //     pos: [30, 31],
+    //   }
+    //   board.ships[3].pos.push(i);
+    // }
 
     if (board.username === "CPU") {
       board.tiles[40].ship = {
@@ -272,7 +275,7 @@ export class GameComponent implements OnInit {
         pos: [40],
       }
       board.ships[4].pos.push(40);
-      board.state = GameState.waitForOpponent;
+      board.state = GameState.fireRocket;
     } else {
       board.state = GameState.placeDestroyer;
     }
@@ -554,7 +557,7 @@ export class GameComponent implements OnInit {
     board.ships[4].pos.push(oppBoats.Destroyer[0]);
   }
 
-  update(coord: number, board: Board, otherBoard: Board) {
+  update(coord: number, board: Board) {
     let shipsPlaced: Tile[];
 
     switch (board.state) {
@@ -647,20 +650,29 @@ export class GameComponent implements OnInit {
         }
         break;
       }
+      // case GameState.waitForOpponent: {
+
+      // }
 
       case GameState.fireRocket: {
         if (this.vsCPU()) {
           this.fire(coord, board);
-          this.checkWinner();
+          if (this.checkWinner()) {
+            return;
+          }
           this.updateCPU();
-          this.checkWinner();
+          if (this.checkWinner()) {
+            return;
+          }
         } else {
           let move = {
             coord: coord,
           }
           this.app.socket.send(move, 2);
           this.fire(coord, board);
-          this.checkWinner();
+          if (this.checkWinner()) {
+            return;
+          }
         }
         break;
       }
@@ -673,21 +685,21 @@ export class GameComponent implements OnInit {
   }
 
   checkWinner() {
-    const dialogConfig = new MatDialogConfig();
-
     let leftLength = 0;
     for (let ship of this.leftBoard.ships) {
       leftLength += ship.pos.length;
     }
     if (leftLength === 0) {
-      this.notif.showNotif(this.app.socket.opponent + " wins!")
+      this.notif.showNotif(this.app.socket.opponent + " wins!", "ok");
       this.leftBoard.state = GameState.gameOver;
       this.rightBoard.state = GameState.gameOver;
+      const dialogConfig = new MatDialogConfig();
       dialogConfig.data = {
-        winner: this.app.socket.opponent,
+        winner: this.rightBoard.username,
       };
       dialogConfig.closeOnNavigation = true;
       this.dialog.open(gameOverDialog, dialogConfig);
+      return true;
     }
 
     let rightLength = 0;
@@ -695,24 +707,34 @@ export class GameComponent implements OnInit {
       rightLength += ship.pos.length;
     }
     if (rightLength === 0) {
-      this.notif.showNotif(this.app.socket.username + " wins!")
+      this.notif.showNotif(this.app.socket.username + " wins!", "ok");
       this.leftBoard.state = GameState.gameOver;
       this.rightBoard.state = GameState.gameOver;
-      let winner = {
-        username: this.app.socket.username,
+      if (this.rightBoard.username !== "CPU") {
+        let winner = this.app.socket.username;
+        this.app.socket.send(winner, 6);
       }
-      this.app.socket.send(winner, 6);
+
+      const dialogConfig = new MatDialogConfig();
       dialogConfig.data = {
-        winner: this.app.socket.username,
+        winner: this.leftBoard.username,
       };
       dialogConfig.closeOnNavigation = true;
       this.dialog.open(gameOverDialog, dialogConfig);
+      return true;
     }
+    return false;
   }
 }
+
 
 @Component({
   selector: 'gameover-dialog',
   templateUrl: 'gameover-dialog.html',
 })
-export class gameOverDialog { }
+export class gameOverDialog {
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ){}
+}
