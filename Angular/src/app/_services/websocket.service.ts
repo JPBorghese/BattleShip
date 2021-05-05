@@ -44,14 +44,9 @@ export class WebsocketService {
     connect() {
         this.chat = [];
         this.username = this.authService.currentUserValue.username;
-<<<<<<< HEAD
-        this.userTurn = true;
-        
-=======
         this.userTurn = true
         this.opponent = null;
 
->>>>>>> 4d40146520aa10a23b8663fdd2e6a074767dce06
         this.socket = webSocket({
             url: 'ws://localhost:8080',
             //deserializer: msg => msg, 
