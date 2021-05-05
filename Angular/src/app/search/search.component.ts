@@ -9,7 +9,7 @@ import { MatDialog} from '@angular/material/dialog';
 })
 export class SearchComponent implements OnInit {
 
-  constructor(private appComponent: AppComponent, 
+  constructor(public appComponent: AppComponent, 
     public dialog: MatDialog) { }
   ngOnInit(): void {
   }
@@ -27,4 +27,5 @@ export class SearchComponent implements OnInit {
   selector: 'searching-dialog',
   templateUrl: 'searching-dialog.html',
 })
-export class searchingDialog {}
+export class searchingDialog {
+}

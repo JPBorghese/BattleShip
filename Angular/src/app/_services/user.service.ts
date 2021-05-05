@@ -18,6 +18,7 @@ export class UserService {
   }
 
   getstats() {
-    return this.http.get<[]>(`http://localhost:3030/user/getstats`, { headers: this.authService.httpHeader });
+    //return this.http.get<[]>(`http://localhost:3030/user/getstats`, { headers: this.authService.httpHeader });
+    return this.http.get<[]>(`http://localhost:3030/user/getstats`);
   }
 }

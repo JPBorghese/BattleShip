@@ -698,10 +698,9 @@ export class GameComponent implements OnInit {
       this.notif.showNotif(this.app.socket.username + " wins!")
       this.leftBoard.state = GameState.gameOver;
       this.rightBoard.state = GameState.gameOver;
-      let winner = {
-        username: this.app.socket.username,
-      }
-      this.app.socket.send(winner, 6);
+      let winner = this.app.socket.username;
+      if (this.rightBoard.username !== "CPU")
+        this.app.socket.send(winner, 6);
       dialogConfig.data = {
         winner: this.app.socket.username,
       };

@@ -20,7 +20,7 @@ export class StatsComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-    console.log(this.stat);
+    //console.log(this.stat);
     this.ranking = this.stat.ranking;
     this.wins = this.stat.wins;
     this.username = this.stat.username;

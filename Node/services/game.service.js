@@ -1,7 +1,10 @@
+const userService = require('./user.service');
+
 module.exports = {
     searchForOpponent,
 	initGame,
-	shot
+	shot,
+	updateStats
 }
 
 // user searching for game
@@ -124,8 +127,6 @@ function findGame(username) {
 	return null;
 }
 
-function printGames() {
-	for (let i = 0; i < games.length; i++) {
-		console.log(games[i]);
-	}
+function updateStats(username, didWin) {
+	userService.updateStats(username, didWin);
 }
