@@ -1,4 +1,4 @@
-<mat-toolbar *ngIf="true">
+<mat-toolbar *ngIf="!isInGame()">
     <button mat-button routerLink="/">Home</button>
     <button mat-button routerLink="/search" *ngIf="isLoggedIn()">Play</button>
     <button mat-button routerLink="/leaderboard">Leaderboard</button>
