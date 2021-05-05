@@ -74,7 +74,7 @@ export class GameComponent implements OnInit {
       this.app.socket.opponent = "CPU";
     }
 
-    this.hardCodeShips(this.leftBoard);
+    //this.hardCodeShips(this.leftBoard);
     this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
   }
 
