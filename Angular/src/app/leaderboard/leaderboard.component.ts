@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Stat } from '../_models/stat';
 import { UserService } from '../_services/user.service';
-import { AuthService } from '../_services/auth';
-import { NotificationService } from '../_services/notification.service';
 
 interface Filters {
   title: string;
@@ -27,7 +25,6 @@ export class LeaderboardComponent implements OnInit {
 
   default = this.filters[0].value;
   constructor(private userservice: UserService,
-    private notif: NotificationService
 
   ) { }
 

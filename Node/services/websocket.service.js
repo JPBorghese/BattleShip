@@ -72,6 +72,8 @@ function onMessage(message) {
 		}
 
 		case MESSAGE_TYPE.GameOver: {
+			console.log('GameOver ', msg);
+
 			removeSocket(msg.username);
 			removeSocket(msg.opponent);
 
