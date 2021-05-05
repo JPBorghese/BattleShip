@@ -15,7 +15,7 @@ const routes: Routes = [
 	{ path: 'login', component: LoginComponent },
 	{ path: 'register', component: RegisterComponent }, 
 	{ path: 'search', component: SearchComponent }, 
-	{ path: 'game', component: GameComponent, canActivate: [AuthGuard] }, 
+	{ path: 'game', component: GameComponent }, 
 	{ path: 'tutorial', component: TutorialComponent },   
 	{ path: 'leaderboard', component: LeaderboardComponent },   
   { path: '**', redirectTo: '' }

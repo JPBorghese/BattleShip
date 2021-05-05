@@ -1,11 +1,73 @@
-<h1>How To Play</h1>
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Tutorial</mat-card-title>
+    </mat-card-header>
+    <mat-card-content *ngIf="getPage() == 1">
+        <img mat-card-image src="assets/mainMenu.png" alt="Main Menu">
+        <b>
+            After Logging in, you should be redirected to the main menu. Click the Play button. 
+        </b>
+    </mat-card-content>
 
-<h4>Step 1</h4>
-<p>Create an account</p>
+    <mat-card-content *ngIf="getPage() == 2">
+        <img mat-card-image src="assets/playMenu.png" alt="Play Menu">
+        <b>
+            You are presented with two options, search to play against another player, or play against a computer.
+        </b>
+    </mat-card-content>
 
-<h4>Step 2</h4>
-<p>Click on <b>Play</b> tab</p>
+    <mat-card-content *ngIf="getPage() == 3">
+        <img mat-card-image src="assets/searching.png" alt="Searching">
+        <b>
+            Clicking on the "Search For Opponent" button will begin searching for another player. 
+            Clicking cancel will stop searching for opponents. Clicking on the "Play Computer" button 
+            will directly place you into the game against a CPU. 
+        </b>
+    </mat-card-content>
 
-<h4>Step 3</h4>
-<p>Start a game!</p>
+    <mat-card-content *ngIf="getPage() == 4">
+        <img mat-card-image src="assets/GameStart.png" alt="Game has started">
+        <b>
+            Once an opponent has been found, or the "Play Computer" button has been pressed, you will be
+            redirected to a battleship game! The left board will be your board, and the right board will be your opponent's baord. 
+        </b>
+    </mat-card-content>
 
+    <mat-card-content *ngIf="getPage() == 5">
+        <img mat-card-image src="assets/placeShip.png" alt="Game has started">
+        <b>
+            Click on a tile to place a ship down. The current ship being placed will be displayed by the notification bar at the bottom. 
+            The ships are color coded. Only valid ship placements are allowed. If you are unable to place a valid ship placement, then 
+            click on the "reset ships" button right below your board. 
+        </b>
+    </mat-card-content>
+
+    <mat-card-content *ngIf="getPage() == 6">
+        <img mat-card-image src="assets/placeShip.png" alt="Game has started">
+        <b>
+            Click on a tile to place a ship down. The current ship being placed will be displayed by the notification bar at the bottom. 
+            The ships are color coded. Only valid ship placements are allowed. If you are unable to place a valid ship placement, then 
+            click on the "reset ships" button right below your board. 
+        </b>
+    </mat-card-content>
+
+    <mat-card-content *ngIf="getPage() == 7">
+        <img mat-card-image src="assets/game.png" alt="Win">
+        <b>
+            Once ship placements are done, the game will notify the players that it has started and who's turn it currently is. Then, 
+            a green border will display on the whichever board's turn. 
+        </b>
+    </mat-card-content>
+
+    <mat-card-content *ngIf="getPage() == 8">
+        <img mat-card-image src="assets/win.png" alt="Win">
+        <b>
+            Once a player win's, a popup will display showing who won. 
+        </b>
+    </mat-card-content>
+
+    <mat-card-actions>
+        <button mat-button (click)="prevPage()">Previous</button>
+        <button mat-button (click)="nextPage()">Next</button>
+    </mat-card-actions>
+</mat-card>

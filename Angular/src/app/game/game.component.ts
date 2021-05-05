@@ -9,6 +9,7 @@ import { Board } from '../_models/board';
 import { User } from '../_models/user';
 import { AppComponent } from '../app.component';
 import { MatDialog, MatDialogConfig, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-game',
@@ -34,8 +35,8 @@ export class GameComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.app.socket.update.subscribe(msg => this.msgReceived(msg));
     this.showChat = false;
+    this.app.socket.userTurn = true;
     this.user = {
       username: "Guest",
     }
@@ -43,6 +44,8 @@ export class GameComponent implements OnInit {
     this.auth.currentUser.subscribe((user) => {
       if (user) {
         this.user = user;
+        this.app.socket.update.subscribe(msg => this.msgReceived(msg));
+
       }
     })
 
@@ -66,8 +69,9 @@ export class GameComponent implements OnInit {
       this.app.socket.opponent = "CPU";
     }
 
-    this.hardCodeShips(this.leftBoard);
+    // this.hardCodeShips(this.leftBoard);
     this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
+    console.log(this.leftBoard);
   }
 
   msgReceived(msg) {
@@ -135,33 +139,50 @@ export class GameComponent implements OnInit {
       return arr1.some(item => arr2.includes(item))
     }
 
+    // function findSameIndex(list1, list2) {
+    //   // for every element in list1
+    //   for (let i = 0; i < list1.length; i++) {
+    //     let item = list1[i];
+    
+    //     // check if item is in list2
+    //     for (let j = 0; i < list2.length; j++) {
+    
+    //       if (item === list2[j]) {
+    //         return true;
+    //       }
+    //     }
+    //   }
+    //   return false;
+    // }
+
     let chosen = [];
     let chosenCourier = possibleCourier[Math.floor(Math.random() * possibleCourier.length)];
-    chosen.push(chosenCourier);
+    chosen.push(...chosenCourier);
 
     let chosenBattleship = possibleBattleship.filter((arr) => {
       return !findSameIndex(arr, chosen);
     });
     chosenBattleship = chosenBattleship[Math.floor(Math.random() * chosenBattleship.length)];
-    chosen.push(chosenBattleship);
+    chosen.push(...chosenBattleship);
 
     let chosenCruiser = possibleCruiser.filter((arr) => {
       return !findSameIndex(arr, chosen);
     });
+
     chosenCruiser = chosenCruiser[Math.floor(Math.random() * chosenCruiser.length)];
-    chosen.push(chosenCruiser);
+    chosen.push(...chosenCruiser);
 
     let chosenSubmarine = possibleSubmarine.filter((arr) => {
       return !findSameIndex(arr, chosen);
     });
     chosenSubmarine = chosenSubmarine[Math.floor(Math.random() * chosenSubmarine.length)];
-    chosen.push(chosenSubmarine);
+    chosen.push(...chosenSubmarine);
 
     let chosenDestroyer = possibleDestroyer.filter((arr) => {
       return !findSameIndex(arr, chosen);
     });
     chosenDestroyer = chosenDestroyer[Math.floor(Math.random() * chosenDestroyer.length)];
-    chosen.push(chosenDestroyer);
+    chosen.push(...chosenDestroyer);
 
     for (let pos of chosenCourier) {
       board.tiles[pos].ship = {
@@ -232,8 +253,8 @@ export class GameComponent implements OnInit {
       ships: this.initShips()
     }
 
-    this.hardCodeShips(board);
-    // this.randomlyPlaceShips(board);
+    this.randomlyPlaceShips(board);
+    console.log(board);
     return board;
   }
 
@@ -713,6 +734,11 @@ export class GameComponent implements OnInit {
 export class gameOverDialog {
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private router: Router
   ) { }
+
+  home() {
+    this.router.navigate(['']);
+  }
 }

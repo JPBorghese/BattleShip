@@ -50,7 +50,7 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-icon class="chat-icon" (click)="showChat = true"> chat</mat-icon>
+  <mat-icon *ngIf=!vsCPU() class="chat-icon" (click)="showChat = true"> chat</mat-icon>
   <mat-card class="chat-box" *ngIf="showChat">
     <mat-card-title>Chat</mat-card-title>
     <mat-icon class="close" (click)="showChat = false">close</mat-icon>
@@ -64,4 +64,4 @@
   </mat-card>
 </div>
 
-<button (click)="play();">hit</button>
+<!-- <button (click)="play();">hit</button> -->
