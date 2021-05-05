@@ -77,7 +77,7 @@ export class GameComponent implements OnInit {
       this.app.socket.opponent = "CPU";
     }
 
-    // this.hardCodeShips(this.leftBoard);
+    this.hardCodeShips(this.leftBoard);
     this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
     console.log(this.leftBoard);
   }
@@ -501,7 +501,7 @@ export class GameComponent implements OnInit {
     if (otherBoard.tiles[coord].ship) {
       this.hitAudioPlay();
       let shipRef = otherBoard.tiles[coord].ship;
-      this.notif.showNotif("hit!", "Ok");
+      // this.notif.showNotif("hit!", "Ok");
       let shipIndex = otherBoard.ships.findIndex(x => x.name === shipRef.name);
       let posIndex = otherBoard.ships[shipIndex].pos.findIndex(x => x === coord);
       otherBoard.ships[shipIndex].pos.splice(posIndex, 1);
@@ -519,25 +519,27 @@ export class GameComponent implements OnInit {
       return;
     }
 
-    function cpufire(otherBoard: Board, notif: NotificationService) {
+    function cpufire(otherBoard: Board, notif: NotificationService, hitAudio, missAudio) {
       let coord = Math.floor(Math.random() * 100);
       if (otherBoard.tiles[coord].ship) {
-        // this.hitAudio.play();
+        hitAudio;
         let shipRef = otherBoard.tiles[coord].ship;
         notif.showNotif("hit!", "Ok");
+        // this.hitAudioPlay();
         let shipIndex = otherBoard.ships.findIndex(x => x.name === shipRef.name);
         let posIndex = otherBoard.ships[shipIndex].pos.findIndex(x => x === coord);
         otherBoard.ships[shipIndex].pos.splice(posIndex, 1);
       } else {
         notif.showNotif("miss!", "Ok");
+        missAudio;
       }
       otherBoard.tiles[coord].isBombed = true;
     }
 
     setTimeout(() => {
-      cpufire(this.leftBoard, this.notif);
+      cpufire(this.leftBoard, this.notif, this.hitAudioPlay(), this.missAudioPlay());
       this.app.socket.userTurn = true;
-    }, 100);
+    }, 1000);
   }
 
   placeOppShips(board: Board, oppBoats) {
