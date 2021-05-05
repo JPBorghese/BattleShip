@@ -272,7 +272,7 @@ export class GameComponent implements OnInit {
     }
 
     board.state = GameState.placeDestroyer;
-    console.log(board.username + ": " + board.state);
+    //console.log(board.username + ": " + board.state);
   }
 
   initTiles(): Tile[] {

@@ -77,7 +77,7 @@ function onMessage(message) {
 			removeSocket(msg.username);
 			removeSocket(msg.opponent);
 
-			const p1Won = (msg.username === msg.message.winner);
+			const p1Won = (msg.username === msg.message);
 
 			gameService.updateStats(msg.username, p1Won);
 			gameService.updateStats(msg.opponent, !p1Won);
