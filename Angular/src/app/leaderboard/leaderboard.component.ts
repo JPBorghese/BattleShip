@@ -29,7 +29,7 @@ export class LeaderboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.sortfilter = "avgtime";
+    this.sortfilter = "wins";
     this.namefilter = "";
     this.loadRanks(this.sortfilter, this.namefilter);
   }

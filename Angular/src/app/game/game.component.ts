@@ -77,9 +77,8 @@ export class GameComponent implements OnInit {
       this.app.socket.opponent = "CPU";
     }
 
-    this.hardCodeShips(this.leftBoard);
+    // this.hardCodeShips(this.leftBoard);
     this.notif.showNotif("Place Courier by clicking on a coordinate on your board", "Ok");
-    console.log(this.leftBoard);
   }
 
   msgReceived(msg) {
@@ -147,26 +146,10 @@ export class GameComponent implements OnInit {
       return arr1.some(item => arr2.includes(item))
     }
 
-    // function findSameIndex(list1, list2) {
-    //   // for every element in list1
-    //   for (let i = 0; i < list1.length; i++) {
-    //     let item = list1[i];
-    
-    //     // check if item is in list2
-    //     for (let j = 0; i < list2.length; j++) {
-    
-    //       if (item === list2[j]) {
-    //         return true;
-    //       }
-    //     }
-    //   }
-    //   return false;
-    // }
-
     let chosen = [];
     let chosenCourier = possibleCourier[Math.floor(Math.random() * possibleCourier.length)];
     chosen.push(...chosenCourier);
-
+    
     let chosenBattleship = possibleBattleship.filter((arr) => {
       return !findSameIndex(arr, chosen);
     });
@@ -262,7 +245,6 @@ export class GameComponent implements OnInit {
     }
 
     this.randomlyPlaceShips(board);
-    console.log(board);
     return board;
   }
 
@@ -757,10 +739,12 @@ export class gameOverDialog {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private router: Router
+    private router: Router, 
+    private dialog: Dialog
   ) { }
 
   home() {
     this.router.navigate(['']);
+    this.dialog.closeAll();
   }
 }

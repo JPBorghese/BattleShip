@@ -11,7 +11,7 @@ const jwt = require('./_helpers/jwt');
 // Our error handler
 const errorHandler = require('./_helpers/error_handler');
 
-if (false) {
+if (true) {
   const path = require('path');
   app.use('/', express.static(path.join(__dirname + '../../Angular/dist/BattleShip')));
 }
