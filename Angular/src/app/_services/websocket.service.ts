@@ -14,7 +14,8 @@ const MESSAGE_TYPE = {
     Move: 2,
     SearchOpponent: 4,
     ShipData: 5, 
-    gameOver: 6
+    gameOver: 6,
+    StopSearch: 7
 }
 Object.freeze(MESSAGE_TYPE);
 
@@ -56,6 +57,14 @@ export class WebsocketService {
             msg => this.msgReceived(msg),
             err => console.log(err)
         );
+    }
+
+    stopSearch() {
+        const message = {
+            username: this.username,
+            type: MESSAGE_TYPE.StopSearch
+        };
+        this.socket.next(message);
     }
 
     disconnect(err) {

@@ -17,7 +17,8 @@ const MESSAGE_TYPE = {
 	Move:2,
 	SearchOpponent:4,
 	ShipData:5,
-	GameOver:6
+	GameOver:6,
+	StopSearch:7
 }
 Object.freeze(MESSAGE_TYPE);
 
@@ -81,6 +82,12 @@ function onMessage(message) {
 
 			gameService.updateStats(msg.username, p1Won);
 			gameService.updateStats(msg.opponent, !p1Won);
+		}
+
+		case MESSAGE_TYPE.StopSearch: {
+			console.log(msg.username, ' stopped searching');
+			removeSocket(msg.username);
+			gameService.removeSearch(msg.username);
 		}
 
 		default:
