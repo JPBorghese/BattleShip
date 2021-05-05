@@ -130,7 +130,7 @@ export class WebsocketService {
 
             case MESSAGE_TYPE.SearchOpponent: {
                 this.opponent = msg.message;
-                console.log('Game Started vs ', this.opponent);
+                //console.log('Game Started vs ', this.opponent);
                 this.router.navigate(['game']);
                 this.dialog.closeAll();
                 break;
