@@ -25,7 +25,7 @@ Object.freeze(MESSAGE_TYPE);
 function onConnect(ws) {
 	removeSocket(ws._protocol);
 	clients.push(ws);
-	console.log(ws._protocol, " connected");
+	//console.log(ws._protocol, " connected");
 }
 
 function sendMsg(ws, message, type = MESSAGE_TYPE.Misc) {
@@ -59,7 +59,7 @@ function onMessage(message) {
 			let first = gameService.initGame(msg);
 
 			if (first) {
-				console.log('Game Starting');
+				//console.log('Game Starting');
 				sendMsg(findSocket(msg.username), first, MESSAGE_TYPE.ShipData);
 				sendMsg(findSocket(msg.opponent), first, MESSAGE_TYPE.ShipData);
 			}
@@ -73,7 +73,7 @@ function onMessage(message) {
 		}
 
 		case MESSAGE_TYPE.GameOver: {
-			console.log('GameOver ', msg);
+			//console.log('GameOver ', msg);
 
 			removeSocket(msg.username);
 			removeSocket(msg.opponent);
@@ -85,7 +85,7 @@ function onMessage(message) {
 		}
 
 		case MESSAGE_TYPE.StopSearch: {
-			console.log(msg.username, ' stopped searching');
+			//console.log(msg.username, ' stopped searching');
 			removeSocket(msg.username);
 			gameService.removeSearch(msg.username);
 		}
@@ -123,7 +123,7 @@ function removeSocket(username) {
 	}
 
 	if (c) {
-		console.log(c._protocol, " Disconnected");
+		//console.log(c._protocol, " Disconnected");
 		c.close();
 	}
 }

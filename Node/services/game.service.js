@@ -41,11 +41,11 @@ let games = [];
 // returns null if other player has not sent info yet
 // returns username of player to go first
 function initGame(msg) {
-	console.log('init: ', msg);
+	//console.log('init: ', msg);
 	let game = findGame(msg.username);
 
 	if (game === null) {
-		console.log('Game created ', msg.username, ' vs. ', msg.opponent);
+		//console.log('Game created ', msg.username, ' vs. ', msg.opponent);
 		const newGame = {
 			p1: msg.username,
 			p2: msg.opponent,
@@ -62,7 +62,7 @@ function initGame(msg) {
 			game.p2boats = msg.message;
 		}
 
-		console.log(game);
+		//console.log(game);
 
 		return game;
 	}
@@ -73,7 +73,7 @@ function shot(username, coord) {
 	let game = findGame(username);
 
 	if (!game) {
-		console.log(username, ' shot without being in a game');
+		//.log(username, ' shot without being in a game');
 		return null;
 	}
 
